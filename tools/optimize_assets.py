@@ -5,6 +5,7 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 from PIL import Image
 
 SHOTS = Path("app/static/landing/shots")
+GUIDE = Path("app/static/landing/guide")
 CARDS = Path("app/static/landing/cards")
 CARDS.mkdir(parents=True, exist_ok=True)
 

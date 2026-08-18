@@ -1,0 +1,119 @@
+/* 가이드북 — 랜딩(landing.css)의 변수·버튼·헤더·푸터를 그대로 쓰고,
+   여기서는 '단계 + 큰 화면 캡처' 배치만 더한다. */
+
+.g-hero {
+  background: var(--navy); color: var(--white);
+  padding: 72px 0 64px;
+}
+.g-hero h1 {
+  color: var(--white); font-size: clamp(30px, 5.4vw, 50px);
+  line-height: 1.24; letter-spacing: -0.03em; margin: 10px 0 18px;
+}
+.g-hero .lead { color: #C6CCD8; max-width: 640px; margin-bottom: 34px; }
+
+.g-need {
+  background: var(--navy-surface); border: 1px solid rgba(255,255,255,.12);
+  border-radius: var(--radius-card); padding: 26px 28px; max-width: 720px;
+}
+.g-need h2 { color: var(--white); font-size: 18px; margin: 0 0 14px; }
+.g-need ol { margin: 0; padding-left: 20px; color: #C6CCD8; line-height: 1.75; }
+.g-need li + li { margin-top: 10px; }
+.g-need b { color: var(--white); }
+.g-need a { color: var(--gold); }
+.g-note {
+  margin: 16px 0 0; padding-top: 14px; font-size: 15px;
+  border-top: 1px solid rgba(255,255,255,.12); color: #9AA6B8; line-height: 1.7;
+}
+.g-note b { color: #C6CCD8; }
+
+/* 목차 — 눌러서 해당 단계로 */
+.g-toc { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 32px; }
+.g-toc a {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 11px 16px; min-height: 44px;
+  border: 1px solid rgba(255,255,255,.18); border-radius: 999px;
+  color: #C6CCD8; text-decoration: none; font-size: 15px;
+  transition: border-color .15s, color .15s, background .15s;
+}
+.g-toc a:hover { color: var(--white); border-color: var(--gold); background: rgba(255,255,255,.06); }
+.g-toc b { color: var(--gold); font-size: 13px; }
+
+/* ── 단계 */
+.g-step { padding: 76px 0; background: var(--white); }
+.g-step.alt { background: var(--cream); }
+.g-step h2 { font-size: clamp(23px, 3.4vw, 32px); letter-spacing: -0.02em; margin: 6px 0 14px; }
+.g-step .lead { max-width: 680px; margin-bottom: 34px; }
+.g-num {
+  margin: 0; font-size: 13px; font-weight: 800; letter-spacing: 0.14em;
+  color: var(--wine); text-transform: uppercase;
+}
+
+/* ── 캡처 */
+.g-shot { margin: 0 0 34px; }
+.g-shot img {
+  display: block; width: 100%; height: auto;
+  border: 1px solid var(--border); border-radius: 12px;
+  box-shadow: var(--shadow-sm); background: #10131a;
+}
+.g-shot figcaption {
+  margin-top: 12px; font-size: 15px; color: var(--ink-sub); line-height: 1.7;
+}
+.g-shot figcaption b { color: var(--ink); }
+
+/* ── 팁 상자 */
+.g-tip {
+  background: var(--white); border: 1px solid var(--border);
+  border-left: 3px solid var(--sage); border-radius: 12px;
+  padding: 20px 24px; max-width: 780px;
+}
+.g-step.alt .g-tip { background: var(--white); }
+.g-tip b { display: block; margin-bottom: 10px; color: var(--ink); }
+.g-tip ul { margin: 0; padding-left: 18px; color: var(--ink-sub); line-height: 1.75; }
+.g-tip li + li { margin-top: 7px; }
+
+/* ── 결과물 목록 */
+.g-out {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius-card); padding: 26px 28px; max-width: 780px;
+}
+.g-out h3 { margin: 0 0 16px; font-size: 18px; }
+.g-out dl { margin: 0; }
+.g-out dt { font-weight: 700; color: var(--ink); margin-top: 14px; }
+.g-out dt:first-child { margin-top: 0; }
+.g-out dd { margin: 3px 0 0; color: var(--ink-sub); line-height: 1.7; }
+.g-out .g-note { border-top-color: var(--border); color: var(--ink-sub); }
+.g-out .g-note b { color: var(--ink); }
+
+/* ── 비용 흐름 */
+.g-flow {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+.g-flow span {
+  background: var(--navy); color: var(--white); border-radius: 999px;
+  padding: 11px 20px; font-weight: 700; font-size: 15px;
+}
+.g-flow em { font-style: normal; color: var(--wine); font-size: 22px; font-weight: 800; }
+
+.g-cost { margin: 0; padding-left: 18px; color: var(--ink-sub); line-height: 1.8; max-width: 760px; }
+.g-cost li + li { margin-top: 8px; }
+.g-cost b { color: var(--ink); }
+
+/* ── 모바일 */
+@media (max-width: 900px) {
+  .g-hero { padding: 52px 0 48px; }
+  .g-step { padding: 56px 0; }
+  .g-shot figcaption, .g-note { font-size: 15px; }
+  .g-need, .g-out { padding: 22px 20px; }
+  .g-tip { padding: 18px 20px; }
+  .g-flow span { font-size: 14px; padding: 10px 16px; }
+}
+
+@media (max-width: 900px) {
+  /* 키 발급 링크는 실제로 눌러서 가는 곳이다. 줄 안에 있어도 누를 만하게. */
+  .g-need a {
+    display: inline-block; padding: 6px 2px; min-height: 34px;
+    line-height: 22px; text-underline-offset: 3px;
+  }
+  .site-footer .copy { font-size: 15px; }
+}

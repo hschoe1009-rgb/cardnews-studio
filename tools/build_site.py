@@ -24,6 +24,7 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="repla
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC_HTML = ROOT / "app" / "templates" / "landing.html"
+SRC_GUIDE = ROOT / "app" / "templates" / "guide.html"
 SRC_ASSETS = ROOT / "app" / "static" / "landing"
 OUT = ROOT / "site"
 
@@ -33,7 +34,7 @@ OUT = ROOT / "site"
 DEFAULT_BASE_URL = "https://cardnews-studio-seven.vercel.app"
 
 # 랜딩 밖에 있지만 배포본에 실제로 존재하는 경로 (build_webapp.py 가 만든다)
-ALLOWED_PATHS = {"/app/"}
+ALLOWED_PATHS = {"/app/", "/guide/"}
 
 
 def build(base_url: str = "") -> None:
@@ -71,10 +72,26 @@ def build(base_url: str = "") -> None:
     if leftovers:
         raise SystemExit(f"앱 경로 링크가 남아 있습니다: {sorted(set(leftovers))}")
 
+    # 가이드북은 별도 페이지다. 랜딩과 같은 자산(landing.css·폰트)을 쓴다.
+    guide = SRC_GUIDE.read_text(encoding="utf-8")
+    guide = guide.replace('<link rel="canonical" href="/guide">',
+                          f'<link rel="canonical" href="{base_url}/guide">' if base_url
+                          else '<link rel="canonical" href="/guide">')
+    if base_url:
+        guide = guide.replace('content="/static/landing/og-cardnews-studio.png"',
+                              f'content="{base_url}/static/landing/og-cardnews-studio.png"')
+    (OUT / "guide").mkdir(parents=True, exist_ok=True)
+    (OUT / "guide" / "index.html").write_text(guide, encoding="utf-8",                                             newline=chr(10))
+
+    missing = [m for m in re.findall(r'(?:src|href)="(/[^"#]+)"', guide)
+               if m not in ALLOWED_PATHS and not (OUT / m.lstrip("/")).exists()]
+    if missing:
+        raise SystemExit(f"가이드북이 없는 파일을 가리킵니다: {sorted(set(missing))}")
+
     total = sum(f.stat().st_size for f in OUT.rglob("*") if f.is_file())
     files = sum(1 for f in OUT.rglob("*") if f.is_file())
     print(f"site/ 빌드 완료: {files}개 파일, {total / 1024 / 1024:.2f} MB")
-    print(f"  1차 CTA → /app/ (웹앱)")
+    print(f"  1차 CTA → /app/ (웹앱), 가이드북 → /guide/")
     print(f"  OG 이미지 → {base_url or '(상대 경로)'}")
 
 

@@ -131,10 +131,13 @@ Vercel 파일시스템은 읽기 전용이라 저장한 작업물이 사라집�
 생성 요청은 각 사용자의 브라우저에서 나가고, 사용료는 그 사람 계정에 청구됩니다.
 
 ```bash
-python tools/build_site.py      # site/ 에 랜딩 (site/ 를 통째로 지우고 다시 만든다)
+python tools/build_site.py      # site/ 에 랜딩 + site/guide/ 에 가이드북
 python tools/build_webapp.py    # site/app/ 에 웹앱 — 반드시 이 순서로
 python tools/check_site.py      # 배포 전 검사
 ```
+
+또는 `preview.bat` 하나로 **빌드 → 검사 → localhost 미리보기**까지 됩니다.
+배포 전에 눈으로 확인할 때 씁니다. `preview.bat phone` 이면 같은 와이파이의 폰에서도 열립니다.
 
 > 순서가 중요합니다. `build_site.py` 가 `site/` 를 지우므로 웹앱을 먼저 만들면 날아갑니다.
 
@@ -158,6 +161,7 @@ OG 이미지와 canonical 이 절대 URL 이어야 링크 미리보기가 나오
 | 무엇을 고치면 | 자동으로 |
 |---|---|
 | `app/templates/landing.html` | `site/` 재빌드 → 검사 → 커밋 → Vercel 배포 |
+| `app/templates/guide.html` | 〃 (가이드북) |
 | `app/static/landing/**` (스타일·화면·카드) | 〃 |
 | `app/templates/index.html`, `app/static/*.js`, `*.css` | 〃 (웹앱도 함께 다시 만듭니다) |
 | `knowledge/brand.json` | 〃 |
@@ -179,6 +183,30 @@ OG 이미지와 canonical 이 절대 URL 이어야 링크 미리보기가 나오
 | `/` | 랜딩페이지 |
 | `/cardnews-studio` | 같은 페이지 (지침서 권장 URL) |
 | `/app/` | **웹앱** — 서버 없이 브라우저에서 도는 본체 |
+| `/guide/` | **가이드북** — 키 설정부터 DB 저장까지 실제 화면으로 안내 |
+
+## 가이드북
+
+`/guide/` 는 실제 프로그램 화면을 순서대로 보여주는 안내서입니다.
+키 설정 → 주제·전략 → 카드 구성 → 배경 이미지 → 글자 편집 → 저장·DB, 여섯 단계입니다.
+
+캡처는 손으로 찍지 않고 스크립트가 만듭니다.
+
+```bash
+python tools/build_webapp.py     # site/app/ 이 먼저 있어야 한다
+python tools/capture_guide.py    # 실제 앱을 조작하며 12장 캡처
+python tools/optimize_assets.py  # PNG → WebP (5MB → 0.4MB)
+```
+
+두 가지를 지킵니다.
+
+- **비용 0원** — Anthropic·OpenAI 호출을 가로채 미리 준비한 응답으로 답합니다.
+  화면은 진짜 앱이 진짜로 그린 것이고, 오간 것은 가짜 응답뿐입니다.
+- **키 노출 0** — 캡처에는 예시용 가짜 키만 들어갑니다.
+  `capture_guide.py` 는 `.env` 를 아예 읽지 않습니다.
+
+문구를 크게 고쳤다면 `tools/subset_fonts.py` 를 다시 돌리세요.
+가이드북 글자도 서브셋에 포함되어 있습니다.
 
 ## 전략은 어디서 오나
 

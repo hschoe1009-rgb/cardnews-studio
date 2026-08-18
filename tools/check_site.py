@@ -122,7 +122,33 @@ def main() -> int:
     else:
         fail("landing.js 가 없습니다.")
 
-    # 9) 용량 (모바일 첫 로딩 부담)
+    # 9) 가이드북도 같은 기준으로 본다 (여기에 캡처가 12장 들어간다)
+    gp = SITE / "guide" / "index.html"
+    if not gp.exists():
+        fail("가이드북(site/guide/index.html)이 없습니다.")
+    else:
+        graw = gp.read_bytes()
+        g = graw.decode("utf-8")
+        gdead = []
+        for h in sorted({m for m in re.findall(r'(?:src|href)="(/[^"#]+)"', g)}):
+            target = SITE / h.lstrip("/")
+            if target.is_dir():
+                target = target / "index.html"
+            if not target.exists():
+                gdead.append(h)
+        gshots = len(re.findall(r'/static/landing/guide/[^"]+', g))
+        if graw.count(bytes([13, 10])):
+            fail("가이드북에 CRLF 가 섞여 있습니다.")
+        elif gdead:
+            fail(f"가이드북에 실물 없는 참조가 있습니다: {gdead}")
+        elif re.search(r"sk-ant-api\w+|sk-proj-\w+", g):
+            fail("가이드북에 API 키로 보이는 문자열이 있습니다.")
+        elif gshots < 8:
+            fail(f"가이드북 캡처가 {gshots}장뿐입니다. capture_guide.py 를 확인하세요.")
+        else:
+            ok(f"가이드북 정상 (캡처 {gshots}장)")
+
+    # 10) 용량 (모바일 첫 로딩 부담)
     total = sum(f.stat().st_size for f in SITE.rglob("*") if f.is_file())
     mb = total / 1024 / 1024
     if mb > 8:

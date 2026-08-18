@@ -48,6 +48,21 @@ var APP_ROOT = (function () {
     localStorage.setItem(CFG, JSON.stringify(c));
     return c;
   }
+  /* HTTP 헤더에는 ISO-8859-1 문자만 실을 수 있다. 키를 복사하다 한글이나
+     보이지 않는 공백이 섞이면 fetch 가 요청도 못 보내고 브라우저 오류를 낸다.
+     그 오류는 무슨 뜻인지 알 수 없으므로, 보내기 전에 우리가 먼저 잡는다. */
+  function checkKey(v, name) {
+    var s2 = String(v || '').trim();
+    if (!s2) return s2;
+    for (var i = 0; i < s2.length; i++) {
+      if (s2.charCodeAt(i) > 255) {
+        throw err(name + ' 키에 한글 같은 문자가 섞여 있습니다. '
+                + '앞뒤 설명은 빼고 키만 붙여넣어 주세요.');
+      }
+    }
+    return s2;
+  }
+
   function keys() {
     try { return JSON.parse(localStorage.getItem(KEY_STORE) || '{}'); } catch (e) { return {}; }
   }
@@ -121,7 +136,7 @@ var APP_ROOT = (function () {
     if (who === 'openai') {
       var r = await fetch('https://api.openai.com/v1/responses', {
         method: 'POST',
-        headers: { 'content-type': 'application/json', authorization: 'Bearer ' + k.openai },
+        headers: { 'content-type': 'application/json', authorization: 'Bearer ' + checkKey(k.openai, 'OpenAI') },
         body: JSON.stringify({
           model: c.OPENAI_TEXT_MODEL,
           instructions: system,
@@ -142,7 +157,7 @@ var APP_ROOT = (function () {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
-        'x-api-key': k.anthropic,
+        'x-api-key': checkKey(k.anthropic, 'Anthropic'),
         'anthropic-version': '2023-06-01',
         'anthropic-dangerous-direct-browser-access': 'true',
       },
@@ -170,7 +185,7 @@ var APP_ROOT = (function () {
     if (!k.openai) throw err('OpenAI 키가 없습니다. 설정 탭에서 입력하거나 프롬프트 복사를 쓰세요.');
     var r = await fetch('https://api.openai.com/v1/images/generations', {
       method: 'POST',
-      headers: { 'content-type': 'application/json', authorization: 'Bearer ' + k.openai },
+      headers: { 'content-type': 'application/json', authorization: 'Bearer ' + checkKey(k.openai, 'OpenAI') },
       body: JSON.stringify({ model: c.IMAGE_MODEL, prompt: prompt, size: c.IMAGE_SIZE, n: 1 }),
     });
     var j = await r.json();
@@ -647,7 +662,7 @@ var APP_ROOT = (function () {
       if (body.provider === 'anthropic') {
         if (!k2.anthropic) throw err('Anthropic 키가 없습니다.');
         var r = await fetch('https://api.anthropic.com/v1/models/' + cfg().CLAUDE_MODEL, {
-          headers: { 'x-api-key': k2.anthropic, 'anthropic-version': '2023-06-01',
+          headers: { 'x-api-key': checkKey(k2.anthropic, 'Anthropic'), 'anthropic-version': '2023-06-01',
                      'anthropic-dangerous-direct-browser-access': 'true' } });
         var j = await r.json();
         if (!r.ok) throw err(readErr(r.status, j));
@@ -655,7 +670,7 @@ var APP_ROOT = (function () {
       }
       if (!k2.openai) throw err('OpenAI 키가 없습니다.');
       var r2 = await fetch('https://api.openai.com/v1/models', {
-        headers: { authorization: 'Bearer ' + k2.openai } });
+        headers: { authorization: 'Bearer ' + checkKey(k2.openai, 'OpenAI') } });
       var j2 = await r2.json();
       if (!r2.ok) throw err(readErr(r2.status, j2));
       var ids = (j2.data || []).map(function (x) { return x.id; });
@@ -668,7 +683,7 @@ var APP_ROOT = (function () {
       var k3 = keys();
       if (!k3.openai) throw err('OpenAI 키가 없습니다.');
       var r3 = await fetch('https://api.openai.com/v1/models', {
-        headers: { authorization: 'Bearer ' + k3.openai } });
+        headers: { authorization: 'Bearer ' + checkKey(k3.openai, 'OpenAI') } });
       var j3 = await r3.json();
       if (!r3.ok) throw err(readErr(r3.status, j3));
       return { models: (j3.data || []).map(function (x) { return x.id; })

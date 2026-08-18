@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>가이드북 | 카드뉴스 스튜디오</title>
+<meta name="description" content="API 키 설정부터 카드 배경 이미지 생성, 엑셀 DB 저장까지 실제 화면을 순서대로 보여주는 카드뉴스 스튜디오 사용 안내서입니다.">
+<link rel="canonical" href="/guide">
+<meta property="og:type" content="article">
+<meta property="og:title" content="카드뉴스 스튜디오 가이드북">
+<meta property="og:description" content="키 설정부터 배경 이미지, 엑셀 DB 저장까지 화면 그대로 따라 하는 안내서.">
+<meta property="og:image" content="/static/landing/og-cardnews-studio.png">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#162033">
+<link rel="icon" href="/static/landing/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/static/landing/landing.css">
+<link rel="stylesheet" href="/static/landing/guide.css">
+</head>
+<body>
+
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+
+<header class="site-header on-navy">
+  <div class="wrap">
+    <a class="brand" href="/">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-text">
+        <b>카드뉴스 스튜디오</b>
+        <span>가이드북</span>
+      </span>
+    </a>
+    <a class="btn btn-primary header-cta" href="/app/">카드뉴스 만들기</a>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ─────────────── 표지 -->
+<section class="g-hero">
+  <div class="wrap">
+    <p class="eyebrow">GUIDEBOOK</p>
+    <h1>화면 그대로 따라 하면<br>첫 카드뉴스가 나옵니다.</h1>
+    <p class="lead">
+      API 키 넣는 것부터 배경 이미지 만들기, 엑셀 DB로 남기는 것까지
+      여섯 단계입니다. 아래 그림은 전부 실제 프로그램 화면입니다.
+    </p>
+
+    <div class="g-need">
+      <h2>시작하기 전에 딱 두 가지</h2>
+      <ol>
+        <li>
+          <b>Anthropic API 키</b> — 글(전략·카드 문구)을 씁니다.
+          <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener noreferrer">console.anthropic.com</a> 에서 발급합니다.
+        </li>
+        <li>
+          <b>OpenAI API 키</b> — 배경 이미지를 만듭니다.
+          <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer">platform.openai.com</a> 에서 발급합니다.
+        </li>
+      </ol>
+      <p class="g-note">
+        둘 다 있어야 하는 것은 아닙니다. <b>Anthropic 키만 있어도</b> 글은 써집니다.
+        반대로 Anthropic 키가 없으면 OpenAI 로 글을 씁니다.
+        이미지는 OpenAI 키가 있을 때만 자동 생성되고, 없으면 직접 올리면 됩니다.
+      </p>
+    </div>
+
+    <nav class="g-toc" aria-label="목차">
+      <a href="#s1"><b>1</b> 키 넣기</a>
+      <a href="#s2"><b>2</b> 주제 → 전략</a>
+      <a href="#s3"><b>3</b> 카드 구성</a>
+      <a href="#s4"><b>4</b> 배경 이미지</a>
+      <a href="#s5"><b>5</b> 글자 편집</a>
+      <a href="#s6"><b>6</b> 저장 · DB</a>
+    </nav>
+  </div>
+</section>
+
+<!-- ─────────────── 1 -->
+<section class="g-step" id="s1">
+  <div class="wrap">
+    <p class="g-num">STEP 1</p>
+    <h2>내 API 키를 넣습니다</h2>
+    <p class="lead">
+      맨 오른쪽 <b>설정</b> 탭을 엽니다. 키는 <b>이 브라우저에만</b> 저장되고
+      어디로도 보내지 않습니다.
+    </p>
+
+    <figure class="g-shot">
+      <img src="/static/landing/guide/01-settings.webp" alt="설정 탭을 연 화면. Anthropic API Key 와 OpenAI API Key 입력칸이 있습니다." width="1600" height="1000" loading="lazy" decoding="async">
+      <figcaption>① 상단 <b>설정</b> 탭 → 키 입력칸 두 개가 보입니다.</figcaption>
+    </figure>
+
+    <figure class="g-shot">
+      <img src="/static/landing/guide/02-keys.webp" alt="두 입력칸에 키를 붙여넣은 화면. 입력값은 점으로 가려집니다." width="1600" height="1000" loading="lazy" decoding="async">
+      <figcaption>② 발급받은 키를 붙여넣습니다. 비밀번호 칸이라 점으로 보이는 것이 정상입니다. 다 넣었으면 아래 <b>설정 저장</b>.</figcaption>
+    </figure>
+
+    <figure class="g-shot">
+      <img src="/static/landing/guide/03-test.webp" alt="Claude 연결 테스트를 눌러 연결 성공 메시지가 뜬 화면." width="1600" height="1000" loading="lazy" decoding="async">
+      <figcaption>③ <b>연결 테스트</b>로 확인합니다. 모델 이름이 보이면 성공입니다.</figcaption>
+    </figure>
+
+    <div class="g-tip">
+      <b>여기서 자주 막힙니다</b>
+      <ul>
+        <li>키만 붙여넣으세요. 앞뒤에 설명이나 따옴표가 딸려 오면 실패합니다.</li>
+        <li>키를 새로 넣었다면 <b>설정 저장</b>을 먼저 누르고 테스트하세요. 테스트는 저장된 키로 합니다.</li>
+        <li>이미지 모델을 쓸 수 없다고 나오면 OpenAI 계정의 결제 수단·인증을 확인하세요.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────── 2 -->
+<section class="g-step alt" id="s2">
+  <div class="wrap">
+    <p class="g-num">STEP 2</p>
+    <h2>주제를 넣고 전략을 고릅니다</h2>
+    <p class="lead">
+      한 줄이면 됩니다. 프로그램이 주제를 좁히고, 서로 다른 각도의
+      <b>앵글 3안</b>을 만들어 줍니다.
+    </p>
+
+    <figure class="g-shot">
+      <img src="/static/landing/guide/04-topic.webp" alt="주제 입력칸에 문장을 적은 화면." width="1600" height="1000" loading="lazy" decoding="async">
+      <figcaption>① <b>1 · 주제</b> 탭에 주제를 한 줄로 적고 <b>키워드 · 전략 뽑기</b>.</figcaption>
+    </figure>
+
+    <figure class="g-shot">
+      <img src="/static/landing/guide/05-strategy.webp" alt="서로 다른 각도의 앵글 3안이 카드 형태로 나온 화면." width="1600" height="1000" loading="lazy" decoding="async">
+      <figcaption>② 앵글 3안이 나옵니다. 각 안마다 <b>왜 이 각도인지</b>가 함께 적혀 있습니다.</figcaption>
+    </figure>
+
+    <figure class="g-shot">
+      <img src="/static/landing/guide/06-angle.webp" alt="앵글 하나를 선택해 테두리가 강조된 화면." width="1600" height="1000" loading="lazy" decoding="async">
+      <figcaption>③ 마음에 드는 것을 하나 고릅니다. 고른 것에 테두리가 생깁니다.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ─────────────── 3 -->
+<section class="g-step" id="s3">
+  <div class="wrap">
+    <p class="g-num">STEP 3</p>
+    <h2>카드를 구성합니다</h2>
+    <p class="lead">
+      고른 앵글로 카드 다섯 장과 캡션·해시태그까지 한 번에 만듭니다.
+      만들어지면 바로 편집 화면으로 넘어갑니다.
+    </p>
+
+    <figure class="g-shot">
+      <img src="/static/landing/guide/07-editor.webp" alt="편집 화면. 왼쪽에 카드 목록, 가운데 미리보기, 오른쪽에 편집 패널이 있습니다." width="1600" height="1000" loading="lazy" decoding="async">
+      <figcaption>
+        화면은 세 칸입니다. <b>왼쪽</b>은 카드 목록, <b>가운데</b>는 지금 보고 있는 카드,
+        <b>오른쪽</b>은 편집 패널(레이어 · 카드 · 이미지 · 발행)입니다.
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ─────────────── 4 -->
+<section class="g-step alt" id="s4">
+  <div class="wrap">
+    <p class="g-num">STEP 4</p>
+    <h2>카드 글에 맞는 배경을 만듭니다</h2>
+    <p class="lead">
+      오른쪽 <b>이미지</b> 탭입니다. 그 카드에 적힌 글을 읽고 어울리는 장면을
+      그립니다. 아무 그림이나 넣는 것이 아닙니다.
+    </p>
+
+    <figure class="g-shot">
+      <img src="/static/landing/guide/08-image-panel.webp" alt="오른쪽 이미지 탭. 추가 지시 입력칸과 이미지 생성 버튼이 있습니다." width="1600" height="1000" loading="lazy" decoding="async">
+      <figcaption>① <b>이미지</b> 탭 → <b>이미지 생성</b>. 원하는 것이 있으면 <b>추가 지시</b>에 적습니다(예: 회색 고등어 고양이, 창가).</figcaption>
+    </figure>
+
+    <figure class="g-shot">
+      <img src="/static/landing/guide/09-image-done.webp" alt="배경 이미지가 생성되어 카드에 적용된 화면." width="1600" height="1000" loading="lazy" decoding="async">
+      <figcaption>② 만들어지면 배경으로 바로 깔립니다. <b>초점 X · Y</b>로 위치를, <b>어둡기</b>로 글자 가독성을 맞춥니다.</figcaption>
+    </figure>
+
+    <div class="g-tip">
+      <b>알아두면 좋습니다</b>
+      <ul>
+        <li>이미지는 카드마다 따로 만듭니다. 한 장씩 확인하며 만드는 편이 낫습니다.</li>
+        <li>직접 찍은 사진이 있으면 아래 칸에 끌어놓으면 됩니다. 이때는 비용이 들지 않습니다.</li>
+        <li>OpenAI 키가 없다면 <b>프롬프트 복사</b>로 문구만 받아 다른 곳에서 만들어 올려도 됩니다.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────── 5 -->
+<section class="g-step" id="s5">
+  <div class="wrap">
+    <p class="g-num">STEP 5</p>
+    <h2>글자를 다듬습니다</h2>
+    <p class="lead">
+      카드 위의 글자는 하나하나 옮기고 고칠 수 있습니다.
+      <b>끌어서</b> 위치를 바꾸고, <b>더블클릭</b>해서 바로 고칩니다.
+    </p>
+
+    <figure class="g-shot">
+      <img src="/static/landing/guide/10-layer.webp" alt="글자 레이어를 선택해 오른쪽에 크기·굵기·색 조절이 나온 화면." width="1600" height="1000" loading="lazy" decoding="async">
+      <figcaption>글자를 누르면 오른쪽 <b>레이어</b> 탭에서 크기 · 굵기 · 색 · 줄간격까지 조절할 수 있습니다.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ─────────────── 6 -->
+<section class="g-step alt" id="s6">
+  <div class="wrap">
+    <p class="g-num">STEP 6</p>
+    <h2>저장하면 DB에 남습니다</h2>
+    <p class="lead">
+      <b>저장 · DB 기록</b>을 누르면 작업물과 함께 <b>제작 데이터</b>가 쌓입니다.
+      날짜 · 주제 · 컨셉축 · 글포맷 · 카드별 문구까지 기록됩니다.
+    </p>
+
+    <figure class="g-shot">
+      <img src="/static/landing/guide/11-save.webp" alt="저장 버튼을 눌러 저장 완료 메시지가 뜬 화면." width="1600" height="1000" loading="lazy" decoding="async">
+      <figcaption>① 오른쪽 위 <b>저장 · DB 기록</b>.</figcaption>
+    </figure>
+
+    <figure class="g-shot">
+      <img src="/static/landing/guide/12-library.webp" alt="보관함 탭에 저장한 프로젝트가 목록으로 쌓인 화면." width="1600" height="1000" loading="lazy" decoding="async">
+      <figcaption>② <b>보관함</b> 탭에 쌓입니다. <b>엑셀 DB 내려받기</b>로 표를 받을 수 있습니다.</figcaption>
+    </figure>
+
+    <div class="g-out">
+      <h3>가져갈 수 있는 것 세 가지</h3>
+      <dl>
+        <dt>PNG 내보내기</dt>
+        <dd>카드 한 장씩 1080×1350 으로 그립니다.</dd>
+        <dt>ZIP 받기</dt>
+        <dd>카드 PNG 전부 + 캡션·해시태그 텍스트를 한 묶음으로 받습니다.</dd>
+        <dt>엑셀 DB 내려받기</dt>
+        <dd>지금까지 만든 것이 두 시트(카드뉴스 · 카드)로 정리됩니다.</dd>
+      </dl>
+      <p class="g-note">
+        웹에서 쓸 때 저장 위치는 <b>이 브라우저 안</b>입니다.
+        다른 기기에서 이어서 보려면 ZIP · 엑셀로 받아 두세요.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────── 비용 -->
+<section class="g-step" id="cost">
+  <div class="wrap">
+    <p class="g-num">비용</p>
+    <h2>사용료는 각자 본인 계정으로 나갑니다</h2>
+    <p class="lead">
+      중간에 거쳐 가는 서버가 없습니다. 생성 요청은
+      <b>내 브라우저에서 각 회사 서버로 바로</b> 갑니다.
+    </p>
+
+    <div class="g-flow" aria-hidden="true">
+      <span>내 브라우저</span>
+      <em>→</em>
+      <span>Anthropic · OpenAI</span>
+    </div>
+
+    <ul class="g-cost">
+      <li>키는 <b>내 브라우저에만</b> 저장됩니다. 만든 사람도 볼 수 없습니다.</li>
+      <li>요금은 <b>내가 넣은 키의 계정</b>에 청구됩니다. 같은 주소로 접속한 다른 사람은 자기 키를 따로 넣습니다.</li>
+      <li>글쓰기는 몇 원 단위, 이미지가 대부분을 차지합니다. 이미지는 카드마다 따로 만드니 필요한 것만 만드세요.</li>
+      <li>직접 올린 사진을 배경으로 쓰면 이미지 비용은 들지 않습니다.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap">
+    <h2>이제 만들어 볼 차례입니다.</h2>
+    <p class="lead">설치 없이 브라우저에서 바로 열립니다.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="/app/">카드뉴스 만들기</a>
+      <a class="btn btn-ghost" href="/">소개 페이지로</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span>카드뉴스 스튜디오</span>
+    <nav aria-label="푸터 메뉴">
+      <ul>
+        <li><a href="/">소개</a></li>
+        <li><a href="/app/">웹앱 열기</a></li>
+      </ul>
+    </nav>
+    <span class="copy">최종 발행 전에는 사람이 한 번 확인해 주세요.</span>
+  </div>
+</footer>
+
+</body>
+</html>

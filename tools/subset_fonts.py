@@ -11,8 +11,9 @@ DST = Path("app/static/landing/fonts"); DST.mkdir(parents=True, exist_ok=True)
 
 # 랜딩 HTML + JS 안의 모든 문자를 모은다
 text = ""
-for f in [Path("app/templates/landing.html"), Path("app/static/landing/landing.js"),
-          Path("app/static/landing/landing.css")]:
+for f in [Path("app/templates/landing.html"), Path("app/templates/guide.html"),
+          Path("app/static/landing/landing.js"), Path("app/static/landing/landing.css"),
+          Path("app/static/landing/guide.css")]:
     text += f.read_text(encoding="utf-8")
 # 태그/속성 이름 때문에 과하게 포함돼도 무해하다(라틴은 어차피 가벼움)
 chars = set(text)
