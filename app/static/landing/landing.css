@@ -456,8 +456,15 @@ html.has-reveal .reveal.in {
   .hero-cards { position: static; margin-top: 18px; }
   .hero-cards img { width: 76px; transform: none !important; }
 }
+/* 모바일 헤더는 좁다. 주 버튼 하나만 남기고 체험은 메뉴 안으로 보낸다. */
+.only-mobile { display: none; }
+
 @media (max-width: 767px) {
   :root { --section-y: 80px; --gutter: 20px; }
+  .only-mobile { display: block; }
+  /* 헤더 버튼만 숨긴다. 같은 헤더 안의 메뉴 링크까지 숨기면
+     모바일에서 체험판으로 갈 길이 아예 없어진다. */
+  .header-cta[data-route="trial"] { display: none; }
   body { font-size: 16px; }
   .site-header .wrap { height: 64px; gap: 12px; }
   .nav-toggle { display: block; }
