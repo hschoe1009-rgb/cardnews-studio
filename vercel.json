@@ -7,7 +7,7 @@
   "rewrites": [
     {
       "source": "/cardnews-studio",
-      "destination": "/index.html"
+      "destination": "/"
     }
   ],
   "headers": [
