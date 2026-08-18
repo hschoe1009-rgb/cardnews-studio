@@ -236,3 +236,84 @@ a.logo {
 a.logo b { color: var(--ink); }
 a.logo span { font-size: 11.5px; opacity: 0.65; }
 a.logo:hover b { color: var(--accent); }
+
+/* ───────────── 반응형
+   로컬앱 시절엔 데스크톱만 보면 됐다. 웹앱은 폰에서도 열리므로
+   3단(필름·캔버스·인스펙터) 고정 배치를 좁은 화면에서 위아래로 푼다.
+   풀지 않으면 360px 폰에서 822px 짜리 화면이 되어 옆으로 밀린다. */
+
+@media (max-width: 900px) {
+  .editor {
+    grid-template-columns: 1fr;
+    height: auto;                 /* 세로로 쌓이므로 화면 높이에 묶지 않는다 */
+  }
+  /* 카드를 맨 위로. 폰에서는 먼저 보이는 것이 결과물이어야 한다. */
+  .canvas-wrap { order: 1; padding: 12px 14px; }
+  .filmstrip   { order: 2; }
+  .inspector   { order: 3; }
+
+  /* 필름은 세로 목록 대신 가로로 넘긴다 */
+  .filmstrip {
+    display: flex; gap: 9px; padding: 10px 12px;
+    border-right: 0; border-top: 1px solid var(--line);
+    overflow-x: auto; overflow-y: hidden;
+  }
+  .film { flex: 0 0 84px; width: 84px; margin-bottom: 0; }
+
+  .inspector { border-left: 0; border-top: 1px solid var(--line); }
+  .ipanel { overflow-y: visible; }
+
+  /* fitStage() 는 .canvas-scroll 의 실제 높이로 배율을 잡는다.
+     높이가 auto 가 되면 0 이 되어 카드가 아예 안 보인다. 그래서 높이를 준다. */
+  .canvas-scroll { flex: none; height: 56vh; min-height: 320px; }
+
+  .canvas-tools { flex-wrap: wrap; }
+
+  /* 12px 대는 폰에서도 태블릿에서도 읽히지 않는다 */
+  .lead.small, .hint, .summary.small, .field > span,
+  .chip, .summary dt, .checkline, .drop { font-size: 13px; }
+  .empty { font-size: 14px; }
+  .hint { font-size: 14px; }          /* 키 없음 같은 경고는 더 잘 보여야 한다 */
+
+  /* 손가락 기준 44px. 태블릿도 손으로 누른다. */
+  button { min-height: 44px; font-size: 14px; }
+  .canvas-tools button { min-height: 42px; padding: 9px 13px; }
+  .lib button { min-height: 38px; padding: 7px 12px; }
+  .mode { padding: 13px 0; font-size: 14px; }
+  .tab { padding: 11px 13px; font-size: 13.5px; min-height: 44px; }
+  .itab { padding: 14px 0; font-size: 13px; min-height: 46px; }
+  a.logo { min-height: 44px; display: inline-flex; align-items: center; }
+
+  /* iOS 는 16px 미만 입력칸에 초점이 가면 화면을 확대해 버린다.
+     한 번 확대되면 레이아웃이 밀린 채로 돌아오지 않는다. 아이패드도 같다. */
+  .field input, .field textarea, .field select { font-size: 16px; padding: 11px 12px; }
+  .field input[type=color] { height: 44px; }
+}
+
+@media (max-width: 600px) {
+  body { font-size: 15px; }
+  .pane { padding: 24px 16px 64px; }
+  h1 { font-size: 21px; }
+  h2 { font-size: 15.5px; }
+
+  /* 상단바: 로고 부제를 접고, 탭은 아래 줄에서 옆으로 넘긴다 */
+  .topbar { height: auto; flex-wrap: wrap; gap: 8px 12px; padding: 8px 14px; }
+  a.logo { font-size: 14px; min-height: 44px; align-items: center; }
+  a.logo span { display: none; }
+  .topbar-right { margin-left: auto; }
+  .tabs {
+    order: 3; width: 100%; overflow-x: auto;
+    gap: 2px; padding-bottom: 2px;
+  }
+  .tab { flex: 0 0 auto; white-space: nowrap; padding: 10px 12px; }
+
+  /* 표는 7칸이라 폰 폭에 안 들어간다. 옆으로 넘겨서 본다. */
+  .lib { display: block; overflow-x: auto; white-space: nowrap; }
+
+  /* 라벨 92px + 내용 2단은 폰에서 내용이 너무 좁다 */
+  .summary dl { grid-template-columns: 1fr; gap: 2px; }
+  .summary dt { margin-top: 8px; }
+
+  .angles { grid-template-columns: 1fr; }
+  .row { flex-direction: column; gap: 0; }
+}

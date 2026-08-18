@@ -485,6 +485,52 @@ html.has-reveal .reveal.in {
   .hero-cards img { width: 64px; }
 }
 
+/* ───────────── 모바일 가독성
+   좁은 화면에서 '읽히는가'를 기준으로 잡은 값들이다.
+     · 320px 에서도 헤더가 안 삐져나오게
+     · 본문 글자는 15px 아래로 내리지 않는다
+     · 손가락으로 누르는 것은 최소 44px
+*/
+
+/* 태블릿까지 포함한다. 아이패드도 손가락으로 누르고, 13px 은 거기서도 작다. */
+@media (max-width: 900px) {
+  /* 작은 글씨가 모바일에서 제일 먼저 안 읽힌다. 바닥을 15px 로 올린다. */
+  .cta-note span,
+  .sample-note,
+  .disclaimer,
+  .shot-caption,
+  .output span { font-size: 15px; }
+
+  /* 푸터 메뉴가 18px 높이라 손가락으로 누르기 어려웠다 */
+  .site-footer nav ul { gap: 4px 8px; }
+  .site-footer nav a {
+    display: inline-block; padding: 11px 12px; min-height: 44px;
+    line-height: 22px; border-radius: 8px;
+  }
+  .site-footer nav a:hover { background: rgba(255,255,255,.07); }
+
+  /* 헤더 로고도 누르는 것이다 */
+  .brand { min-height: 44px; }
+}
+
+@media (max-width: 400px) {
+  /* 320px 기준: 로고(158) + 메뉴버튼(32) + CTA(118) + 여백(40) = 372 > 320.
+     로고 부제를 접고 글자·여백을 줄여 한 줄에 넣는다. */
+  :root { --gutter: 14px; }
+  .site-header .wrap { gap: 8px; }
+  .brand { gap: 7px; }
+  .brand-mark { width: 26px; height: 26px; }
+  .brand-mark::after { inset: 6px 8px; }
+  .brand-text b { font-size: 15px; }
+  .brand-text span { display: none; }        /* '카드뉴스 자동생성기' 부제 */
+  .header-cta { padding: 11px 12px; font-size: 13.5px; }
+  .nav-toggle { width: 40px; height: 40px; }
+
+  /* 히어로 버튼은 나란히 두면 좁으니 위아래로 */
+  .hero .cta-row { flex-direction: column; align-items: stretch; }
+  .hero .cta-row .btn { width: 100%; }
+}
+
 /* ── 모션 축소 */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
