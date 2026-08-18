@@ -85,14 +85,27 @@ def main() -> int:
     else:
         ok(f"메타 태그 {len(required)}종 존재")
 
-    # 6) 비밀이 섞여 들어가지 않았는가
+    # 6) og:image 와 canonical 이 절대 URL 인가.
+    #    상대 경로면 카카오톡·슬랙 링크 미리보기가 나오지 않는다.
+    for prop, pat in [("og:image", r'property="og:image" content="([^"]+)"'),
+                      ("canonical", r'rel="canonical" href="([^"]+)"')]:
+        m = re.search(pat, html)
+        if not m:
+            fail(f"{prop} 를 찾지 못했습니다.")
+        elif not m.group(1).startswith("http"):
+            fail(f"{prop} 가 상대 경로입니다({m.group(1)}). "
+                 "build_site.py 의 DEFAULT_BASE_URL 을 확인하세요.")
+        else:
+            ok(f"{prop} 절대 URL")
+
+    # 7) 비밀이 섞여 들어가지 않았는가
     secret = re.search(r"sk-ant-api\w+|sk-proj-\w+|gh[pous]_[A-Za-z0-9]{20,}", html)
     if secret:
         fail("빌드 결과에 API 키로 보이는 문자열이 있습니다.")
     else:
         ok("비밀 문자열 없음")
 
-    # 7) FAQ 개수 (화면과 구조화 데이터가 같은 배열에서 나온다)
+    # 8) FAQ 개수 (화면과 구조화 데이터가 같은 배열에서 나온다)
     js = SITE / "static" / "landing" / "landing.js"
     if js.exists():
         body = js.read_text(encoding="utf-8")
@@ -105,7 +118,7 @@ def main() -> int:
     else:
         fail("landing.js 가 없습니다.")
 
-    # 8) 용량 (모바일 첫 로딩 부담)
+    # 9) 용량 (모바일 첫 로딩 부담)
     total = sum(f.stat().st_size for f in SITE.rglob("*") if f.is_file())
     mb = total / 1024 / 1024
     if mb > 8:

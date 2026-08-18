@@ -108,8 +108,11 @@ Vercel 파일시스템은 읽기 전용이라 저장한 작업물이 사라집�
 
 ```bash
 python tools/build_site.py                       # site/ 에 정적 사이트 생성
-python tools/build_site.py https://내도메인.app   # OG 이미지를 절대 URL로
 ```
+
+배포 주소는 `tools/build_site.py` 의 `DEFAULT_BASE_URL` 에 고정돼 있습니다.
+OG 이미지와 canonical 이 절대 URL 이어야 링크 미리보기가 나오기 때문입니다.
+**커스텀 도메인을 붙이면 이 값만 바꾸면 됩니다.**
 
 `vercel.json` 이 `site/` 를 배포 폴더로 지정합니다. Vercel에서 이 저장소를 연결하면
 빌드 명령 없이 그대로 서비스됩니다.
@@ -126,8 +129,8 @@ python tools/build_site.py https://내도메인.app   # OG 이미지를 절대 U
 | `tools/build_site.py` | 〃 |
 
 - Pull Request 에서는 **검사만** 하고 커밋하지 않습니다.
-- OG 이미지를 절대 주소로 바꾸려면 Actions 탭에서 `랜딩페이지 빌드` → **Run workflow** →
-  주소를 입력해 수동 실행하면 됩니다.
+- 배포 주소는 `build_site.py` 의 `DEFAULT_BASE_URL` 을 씁니다. 다른 주소로 한 번만
+  빌드하려면 Actions 탭에서 **Run workflow** 에 주소를 입력하면 됩니다.
 - 되돌이 실행은 두 겹으로 막혀 있습니다. 감시 경로에 `site/**` 가 없고,
   `GITHUB_TOKEN` 으로 만든 푸시는 워크플로를 다시 켜지 않습니다.
 

@@ -23,7 +23,7 @@ on:
   workflow_dispatch:
     inputs:
       base_url:
-        description: 'OG 이미지에 쓸 절대 주소 (예: https://cardnews-studio.vercel.app). 비우면 상대 경로'
+        description: 'OG 이미지에 쓸 절대 주소. 비우면 build_site.py 의 DEFAULT_BASE_URL 을 씁니다.'
         required: false
         default: ''
 

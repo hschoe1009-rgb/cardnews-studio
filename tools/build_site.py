@@ -27,9 +27,15 @@ SRC_HTML = ROOT / "app" / "templates" / "landing.html"
 SRC_ASSETS = ROOT / "app" / "static" / "landing"
 OUT = ROOT / "site"
 
+# 배포 주소. OG 이미지와 canonical 은 크롤러가 절대 URL 을 요구한다.
+# 여기에 고정해 두어야 CI 가 인자 없이 빌드해도 같은 결과가 나온다.
+# 커스텀 도메인을 붙이면 이 값만 바꾸면 된다.
+DEFAULT_BASE_URL = "https://cardnews-studio-seven.vercel.app"
+
 
 def build(base_url: str = "") -> None:
-    base_url = base_url.rstrip("/")
+    # 인자를 주면 그것을, 없으면 위 기본값을 쓴다.
+    base_url = (base_url or DEFAULT_BASE_URL).rstrip("/")
 
     if OUT.exists():
         shutil.rmtree(OUT)
