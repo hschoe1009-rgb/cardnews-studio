@@ -553,3 +553,99 @@ html.has-deck .panel.slide-in-left  { animation: slideInLeft  .34s var(--ease) b
   html.has-deck .panel.slide-in-right,
   html.has-deck .panel.slide-in-left { animation: none; }
 }
+
+/* ───────────── 웹 체험판 */
+.btn-trial {
+  background: var(--wine); color: var(--white); border-color: var(--wine);
+}
+.btn-trial:hover { background: #93233A; border-color: #93233A; }
+
+.trial { background: var(--cream); }
+.trial-notice {
+  background: var(--white); border: 1px solid var(--border); border-left: 3px solid var(--sage);
+  border-radius: 12px; padding: 18px 22px; margin-bottom: 40px;
+  font-size: 15px; color: var(--ink-sub); line-height: 1.7; max-width: 780px;
+}
+.trial-notice b { color: var(--ink); }
+.trial-notice span { display: block; margin-top: 6px; color: var(--wine); font-weight: 700; }
+
+.tstep {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius-card); padding: 28px 28px 30px; margin-bottom: 20px;
+}
+.tstep h3 { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; font-size: 20px; }
+.tnum {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; border-radius: 50%; flex: 0 0 auto;
+  background: var(--navy); color: var(--gold); font-size: 14px; font-weight: 800;
+}
+.tstep .field > span { color: var(--ink-sub); }
+.tstep .field input, .tstep .field select {
+  width: 100%; padding: 12px 14px; font: inherit; font-size: 15px;
+  background: var(--cream); color: var(--ink);
+  border: 1px solid var(--border); border-radius: 10px;
+}
+.tstep .field input:focus, .tstep .field select:focus { outline: none; border-color: var(--wine); }
+.trow { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.trow .btn { min-height: 48px; }
+.thint { margin-top: 14px; font-size: 13.5px; color: var(--ink-sub); }
+.thint a { color: var(--wine); }
+
+.tstatus { font-size: 14px; color: var(--ink-sub); }
+.tstatus.busy { color: var(--wine); font-weight: 700; }
+.tstatus.ok { color: #2F6B4F; font-weight: 700; }
+.tstatus.err { color: #A3202F; font-weight: 700; }
+
+.tmeta { font-size: 14.5px; color: var(--ink-sub); margin: 22px 0 14px; }
+.tangles { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+.tangle {
+  text-align: left; padding: 20px; border-radius: 12px; cursor: pointer; line-height: 1.5;
+  background: var(--cream); border: 1.5px solid var(--border); color: var(--ink);
+}
+.tangle:hover { border-color: var(--ink-sub); }
+.tangle.on { border-color: var(--wine); box-shadow: 0 0 0 1px var(--wine) inset; }
+.tangle .ttag { display: block; font-size: 12px; color: var(--wine); font-weight: 700; margin-bottom: 8px; }
+.tangle b { display: block; font-size: 17px; margin-bottom: 8px; letter-spacing: -0.02em; }
+.tangle .tone { display: block; font-size: 14px; color: var(--ink-sub); }
+.tangle .tcta { display: block; font-size: 12.5px; color: var(--ink-sub); margin-top: 10px; }
+
+.tresult { display: grid; gap: 28px; }
+@media (min-width: 900px) { .tresult { grid-template-columns: 360px 1fr; } }
+
+.tstage {
+  container-type: inline-size;
+  position: relative; width: 100%; aspect-ratio: 4 / 5;
+  border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-sm);
+  background: var(--navy);
+  font-family: 'Pretendard', sans-serif;
+}
+.tbg { position: absolute; inset: 0; background-size: cover; background-position: center; }
+.tov {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(22,32,51,.78) 0%, rgba(22,32,51,.22) 45%, rgba(22,32,51,.72) 100%);
+}
+.tlayer {
+  position: absolute; left: 8%; width: 84%;
+  white-space: pre-wrap; word-break: keep-all;
+  text-shadow: 0 2px 18px rgba(0,0,0,.35);
+}
+.tnav { justify-content: center; margin-top: 14px; }
+.tnav .btn { min-height: 44px; padding: 10px 18px; }
+.tnav span { font-size: 14px; color: var(--ink-sub); min-width: 60px; text-align: center; }
+
+.tcaption { margin-top: 22px; font-size: 14.5px; }
+.tcaption b { display: block; margin-top: 16px; font-size: 13px; color: var(--wine); }
+.tcaption p { margin: 4px 0 0; white-space: pre-wrap; color: var(--ink-sub); }
+.tcaption .ttags { color: var(--ink); }
+
+.trial-foot {
+  margin-top: 32px; padding: 20px 24px; border-radius: 12px;
+  background: var(--navy); color: #C6CCD8; font-size: 14.5px;
+}
+.trial-foot a { color: var(--gold); }
+
+@media (max-width: 767px) {
+  .tstep { padding: 22px 20px 24px; }
+  .trow .btn { width: 100%; }
+  .tnav .btn { width: auto; }
+}
