@@ -112,8 +112,29 @@ python tools/build_site.py https://내도메인.app   # OG 이미지를 절대 U
 ```
 
 `vercel.json` 이 `site/` 를 배포 폴더로 지정합니다. Vercel에서 이 저장소를 연결하면
-빌드 명령 없이 그대로 서비스됩니다. 문구나 화면을 고쳤다면 위 명령으로 `site/` 를
-다시 만들고 커밋해야 반영됩니다.
+빌드 명령 없이 그대로 서비스됩니다.
+
+### 빌드 자동화 (GitHub Actions)
+
+랜딩 소스를 고쳐서 push 하면 `.github/workflows/build-site.yml` 이
+`site/` 를 다시 만들고, 검사를 통과하면 커밋합니다. **손으로 빌드할 일이 없습니다.**
+
+| 무엇을 고치면 | 자동으로 |
+|---|---|
+| `app/templates/landing.html` | `site/` 재빌드 → 검사 → 커밋 → Vercel 배포 |
+| `app/static/landing/**` (스타일·화면·카드) | 〃 |
+| `tools/build_site.py` | 〃 |
+
+- Pull Request 에서는 **검사만** 하고 커밋하지 않습니다.
+- OG 이미지를 절대 주소로 바꾸려면 Actions 탭에서 `랜딩페이지 빌드` → **Run workflow** →
+  주소를 입력해 수동 실행하면 됩니다.
+- 되돌이 실행은 두 겹으로 막혀 있습니다. 감시 경로에 `site/**` 가 없고,
+  `GITHUB_TOKEN` 으로 만든 푸시는 워크플로를 다시 켜지 않습니다.
+
+`tools/check_site.py` 가 배포 전에 다음을 확인하고, 하나라도 걸리면 배포를 막습니다.
+
+없는 자산 · 앱 경로로 가는 링크(공개 사이트에서 404) · 서버 API 참조 ·
+메타 태그 누락 · API 키 문자열 혼입 · CRLF 혼입 · 과도한 용량
 
 | 경로 | 내용 |
 |---|---|

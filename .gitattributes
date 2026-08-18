@@ -1,0 +1,11 @@
+# 빌드 산출물과 소스의 줄바꿈을 저장소에서 LF 로 통일한다.
+# 윈도우에서 빌드하든 CI(리눅스)에서 빌드하든 같은 결과가 나오게 하기 위함.
+* text=auto eol=lf
+
+# 바이너리는 건드리지 않는다
+*.png binary
+*.webp binary
+*.woff2 binary
+*.otf binary
+*.xlsx binary
+*.zip binary

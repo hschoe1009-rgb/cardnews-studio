@@ -55,7 +55,9 @@ def build(base_url: str = "") -> None:
     # 앵커 목적지
     html = html.replace('<body>', '<body id="top">', 1)
 
-    (OUT / "index.html").write_text(html, encoding="utf-8")
+    # 줄바꿈을 LF 로 고정한다. 윈도우에서 빌드하면 CRLF 가 되어
+    # CI(리눅스) 결과와 달라지고, 워크플로가 매번 헛커밋을 만든다.
+    (OUT / "index.html").write_text(html, encoding="utf-8", newline="\n")
 
     # 남아 있는 앱 경로 링크가 없는지 확인 (있으면 공개 사이트에서 404 난다)
     leftovers = re.findall(r'href="/(?!static/)[^"#][^"]*"', html)

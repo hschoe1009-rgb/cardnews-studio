@@ -1,0 +1,83 @@
+name: 랜딩페이지 빌드
+
+# 랜딩 소스를 고쳐서 push 하면 site/ 를 다시 만들어 커밋한다.
+# Vercel 은 site/ 를 보고 배포하므로, 손으로 빌드할 일이 없어진다.
+#
+# 되돌이 실행 걱정은 없다. 아래 두 겹으로 막혀 있다.
+#   1. paths 에 site/** 가 없어서, site/ 만 바뀐 커밋은 이 워크플로를 다시 켜지 않는다.
+#   2. GITHUB_TOKEN 으로 만든 푸시는 원래 워크플로를 트리거하지 않는다.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'app/templates/landing.html'
+      - 'app/static/landing/**'
+      - 'tools/build_site.py'
+      - '.github/workflows/build-site.yml'
+  pull_request:
+    paths:
+      - 'app/templates/landing.html'
+      - 'app/static/landing/**'
+      - 'tools/build_site.py'
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: 'OG 이미지에 쓸 절대 주소 (예: https://cardnews-studio.vercel.app). 비우면 상대 경로'
+        required: false
+        default: ''
+
+concurrency:
+  group: build-site-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: site/ 다시 만들고 검사
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 저장소 가져오기
+        uses: actions/checkout@v4
+
+      - name: 파이썬 준비
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 랜딩 빌드
+        run: python tools/build_site.py "${{ github.event.inputs.base_url }}"
+
+      - name: 결과 검사
+        run: python tools/check_site.py
+
+      - name: 바뀐 것이 있으면 커밋
+        # PR 에서는 커밋하지 않는다. 검사만 하고 끝낸다.
+        if: github.event_name != 'pull_request'
+        run: |
+          if git diff --quiet -- site; then
+            echo "site/ 에 바뀐 내용이 없습니다. 커밋을 건너뜁니다."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add site
+          git commit -m "랜딩 빌드 결과 갱신 (${GITHUB_SHA::7})"
+          git push
+          echo "site/ 를 갱신했습니다. Vercel 이 이 커밋으로 배포합니다."
+
+      - name: 요약
+        if: always()
+        run: |
+          {
+            echo "### 랜딩페이지 빌드"
+            echo ""
+            echo "| 항목 | 값 |"
+            echo "|---|---|"
+            echo "| 파일 수 | $(find site -type f | wc -l) |"
+            echo "| 용량 | $(du -sh site | cut -f1) |"
+            echo "| OG 절대주소 | ${{ github.event.inputs.base_url || '(상대 경로)' }} |"
+          } >> "$GITHUB_STEP_SUMMARY"
