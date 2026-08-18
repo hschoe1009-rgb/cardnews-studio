@@ -1,6 +1,8 @@
-name: 랜딩페이지 빌드
+name: 랜딩 + 웹앱 빌드
 
-# 랜딩 소스를 고쳐서 push 하면 site/ 를 다시 만들어 커밋한다.
+# 랜딩이나 앱 소스를 고쳐서 push 하면 site/ 를 다시 만들어 커밋한다.
+# site/ 안에는 랜딩(루트)과 서버 없는 웹앱(app/)이 함께 들어간다.
+# build_site.py 가 site/ 를 통째로 지우므로 반드시 그 다음에 build_webapp.py 를 돌린다.
 # Vercel 은 site/ 를 보고 배포하므로, 손으로 빌드할 일이 없어진다.
 #
 # 되돌이 실행 걱정은 없다. 아래 두 겹으로 막혀 있다.
@@ -12,14 +14,26 @@ on:
     branches: [main]
     paths:
       - 'app/templates/landing.html'
+      - 'app/templates/index.html'
       - 'app/static/landing/**'
+      - 'app/static/*.js'
+      - 'app/static/*.css'
+      - 'app/static/fonts/**'
+      - 'knowledge/brand.json'
       - 'tools/build_site.py'
+      - 'tools/build_webapp.py'
       - '.github/workflows/build-site.yml'
   pull_request:
     paths:
       - 'app/templates/landing.html'
+      - 'app/templates/index.html'
       - 'app/static/landing/**'
+      - 'app/static/*.js'
+      - 'app/static/*.css'
+      - 'app/static/fonts/**'
+      - 'knowledge/brand.json'
       - 'tools/build_site.py'
+      - 'tools/build_webapp.py'
   workflow_dispatch:
     inputs:
       base_url:
@@ -36,7 +50,7 @@ permissions:
 
 jobs:
   build:
-    name: site/ 다시 만들고 검사
+    name: site/ 다시 만들고 검사 (랜딩 + 웹앱)
     runs-on: ubuntu-latest
 
     steps:
@@ -50,6 +64,9 @@ jobs:
 
       - name: 랜딩 빌드
         run: python tools/build_site.py "${{ github.event.inputs.base_url }}"
+
+      - name: 웹앱 빌드
+        run: python tools/build_webapp.py
 
       - name: 결과 검사
         run: python tools/check_site.py
@@ -65,7 +82,7 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add site
-          git commit -m "랜딩 빌드 결과 갱신 (${GITHUB_SHA::7})"
+          git commit -m "사이트 빌드 결과 갱신 (${GITHUB_SHA::7})"
           git push
           echo "site/ 를 갱신했습니다. Vercel 이 이 커밋으로 배포합니다."
 
@@ -73,11 +90,12 @@ jobs:
         if: always()
         run: |
           {
-            echo "### 랜딩페이지 빌드"
+            echo "### 랜딩 + 웹앱 빌드"
             echo ""
             echo "| 항목 | 값 |"
             echo "|---|---|"
             echo "| 파일 수 | $(find site -type f | wc -l) |"
+            echo "| 웹앱 파일 | $(find site/app -type f | wc -l) |"
             echo "| 용량 | $(du -sh site | cut -f1) |"
             echo "| OG 절대주소 | ${{ github.event.inputs.base_url || '(상대 경로)' }} |"
           } >> "$GITHUB_STEP_SUMMARY"

@@ -1,11 +1,11 @@
 """랜딩페이지를 Vercel용 정적 사이트(site/)로 빌드한다.
 
-로컬 앱(FastAPI)은 Vercel에서 돌릴 수 없다. Playwright/Chromium 용량과
-파일 쓰기(프로젝트 JSON·이미지·엑셀 DB) 때문이다. 그래서 공개 배포 대상은
-'제품 소개 랜딩페이지'뿐이고, 앱은 각자 PC에서 run.bat 으로 실행한다.
+FastAPI 서버는 Vercel에서 돌릴 수 없다(Playwright/Chromium 용량, 파일 쓰기).
+그래서 앱은 site/app/ 에 '서버 없는 웹앱'으로 따로 빌드한다(tools/build_webapp.py).
+랜딩의 1차 CTA는 그 웹앱(/app/)으로 보낸다.
 
-지침서 6.3 규칙에 따라, 앱이 뒤에 없는 공개 랜딩에서는
-1차 CTA를 앱 경로(/)가 아니라 실행 안내(#setup)로 보낸다.
+주의: 이 스크립트는 site/ 를 통째로 지우고 다시 만든다.
+따라서 build_site.py 를 먼저, build_webapp.py 를 나중에 돌려야 한다.
 
 사용법:
     python tools/build_site.py                      # 상대 경로로 빌드
@@ -32,6 +32,9 @@ OUT = ROOT / "site"
 # 커스텀 도메인을 붙이면 이 값만 바꾸면 된다.
 DEFAULT_BASE_URL = "https://cardnews-studio-seven.vercel.app"
 
+# 랜딩 밖에 있지만 배포본에 실제로 존재하는 경로 (build_webapp.py 가 만든다)
+ALLOWED_PATHS = {"/app/"}
+
 
 def build(base_url: str = "") -> None:
     # 인자를 주면 그것을, 없으면 위 기본값을 쓴다.
@@ -44,9 +47,6 @@ def build(base_url: str = "") -> None:
 
     html = SRC_HTML.read_text(encoding="utf-8")
 
-    # 1차 CTA: 앱이 없으므로 실행 안내로 보낸다 (지침서 6.3)
-    html = html.replace('href="/" data-ev="click_primary_cta"',
-                        'href="#setup" data-ev="click_primary_cta"')
     # 헤더 로고는 페이지 처음으로
     html = html.replace('<a class="brand" href="/cardnews-studio">',
                         '<a class="brand" href="#top">')
@@ -65,15 +65,16 @@ def build(base_url: str = "") -> None:
     # CI(리눅스) 결과와 달라지고, 워크플로가 매번 헛커밋을 만든다.
     (OUT / "index.html").write_text(html, encoding="utf-8", newline="\n")
 
-    # 남아 있는 앱 경로 링크가 없는지 확인 (있으면 공개 사이트에서 404 난다)
-    leftovers = re.findall(r'href="/(?!static/)[^"#][^"]*"', html)
+    # 남은 절대 경로는 site/ 안에 실제 파일이 있어야 한다 (없으면 공개 사이트에서 404)
+    leftovers = [h for h in re.findall(r'href="/(?!static/)[^"#][^"]*"', html)
+                 if h[6:-1] not in ALLOWED_PATHS]
     if leftovers:
         raise SystemExit(f"앱 경로 링크가 남아 있습니다: {sorted(set(leftovers))}")
 
     total = sum(f.stat().st_size for f in OUT.rglob("*") if f.is_file())
     files = sum(1 for f in OUT.rglob("*") if f.is_file())
     print(f"site/ 빌드 완료: {files}개 파일, {total / 1024 / 1024:.2f} MB")
-    print(f"  1차 CTA → #setup (실행 안내)")
+    print(f"  1차 CTA → /app/ (웹앱)")
     print(f"  OG 이미지 → {base_url or '(상대 경로)'}")
 
 

@@ -1,7 +1,20 @@
 # 카드뉴스 스튜디오
 
 주제만 넣으면 **옵시디언의 마케팅 자료를 근거로** 카드뉴스 전략·문구·이미지를 만들고,
-프로그램 안에서 편집한 뒤 PNG와 엑셀 DB로 남기는 로컬 프로그램입니다.
+프로그램 안에서 편집한 뒤 PNG와 엑셀 DB로 남기는 프로그램입니다.
+
+**두 가지 방식으로 씁니다.**
+
+| | 로컬앱 | 웹앱 |
+|---|---|---|
+| 실행 | `run.bat` (FastAPI + Playwright) | 브라우저에서 [/app/](https://cardnews-studio-seven.vercel.app/app/) 열기 |
+| 설치 | 필요 | 없음 |
+| 저장 | `data/` 폴더의 JSON·PNG·엑셀 | 브라우저 IndexedDB → ZIP·엑셀로 내려받기 |
+| 옵시디언 전략 노트 참조 | 됨 | 안 됨 (내장 지침만 사용) |
+| API 사용료 | 내 키 | **쓰는 사람 각자의 키** |
+
+기능은 같습니다. 전략 3안 → 카드 구성 → 배경 이미지 → 레이어 편집 →
+PNG·ZIP·엑셀 DB 까지 웹앱에서도 그대로 됩니다.
 
 ```
 주제 입력  ─┐
@@ -14,14 +27,15 @@ MD·블로그 ─┘   → 카드 구성 + 캡션    (Claude)
 
 ---
 
-## 화면 두 개
+## 화면
 
 | 주소 | 용도 |
 |---|---|
-| `http://127.0.0.1:8765/` | **앱 본체** — 카드뉴스를 만들고 편집하는 작업 화면 |
+| `http://127.0.0.1:8765/` | **앱 본체(로컬)** — 카드뉴스를 만들고 편집하는 작업 화면 |
 | `http://127.0.0.1:8765/cardnews-studio` | **랜딩페이지** — 제품 소개. 처음 보는 사람에게 보여줄 화면 |
+| `배포주소/app/` | **웹앱** — 같은 화면이 서버 없이 브라우저에서 돕니다 |
 
-랜딩페이지의 `카드뉴스 만들기` 버튼은 앱 본체(`/`)로 연결됩니다.
+랜딩페이지의 `카드뉴스 만들기` 버튼은 웹앱(`/app/`)으로 연결됩니다.
 스크린샷과 완성 카드는 이 프로그램에서 실제로 캡처·생성한 것입니다.
 화면을 다시 캡처하려면 `tools/` 의 스크립트를 참고하세요.
 
@@ -99,16 +113,34 @@ python -m venv .venv
 
 ## 배포 (Vercel)
 
-**앱 본체는 Vercel에 올릴 수 없습니다.** PNG 내보내기에 Playwright + Chromium(300MB+)이
+**FastAPI 서버는 Vercel에 올릴 수 없습니다.** PNG 내보내기에 Playwright + Chromium(300MB+)이
 필요해 서버리스 용량 한도를 넘고, 프로젝트 JSON·이미지·엑셀 DB를 디스크에 쓰는데
 Vercel 파일시스템은 읽기 전용이라 저장한 작업물이 사라집니다.
 
-그래서 **공개 배포 대상은 랜딩페이지뿐**이고, 앱은 각자 PC에서 `run.bat` 으로 씁니다.
-이때 랜딩의 1차 CTA는 앱(`/`)이 아니라 실행 안내(`#setup`)로 연결됩니다.
+그래서 **서버를 없앴습니다.** `app/static/webapi.js` 가 브라우저 안에서 서버 몫을 합니다.
+
+| 서버가 하던 일 | 브라우저에서 |
+|---|---|
+| Claude·OpenAI 호출 | 브라우저 → 각 회사 서버로 **직접** (키는 이 브라우저에만) |
+| 프로젝트 저장 | IndexedDB |
+| PNG 렌더 (Playwright) | `<canvas>` 로 직접 그림 |
+| ZIP 묶기 | 무압축 ZIP 을 직접 조립 |
+| 엑셀 DB | 최소 xlsx(= XML 이 든 ZIP)를 직접 조립 |
+
+덕분에 **배포한 사람에게는 서버 비용도 API 비용도 들지 않습니다.**
+생성 요청은 각 사용자의 브라우저에서 나가고, 사용료는 그 사람 계정에 청구됩니다.
 
 ```bash
-python tools/build_site.py                       # site/ 에 정적 사이트 생성
+python tools/build_site.py      # site/ 에 랜딩 (site/ 를 통째로 지우고 다시 만든다)
+python tools/build_webapp.py    # site/app/ 에 웹앱 — 반드시 이 순서로
+python tools/check_site.py      # 배포 전 검사
 ```
+
+> 순서가 중요합니다. `build_site.py` 가 `site/` 를 지우므로 웹앱을 먼저 만들면 날아갑니다.
+
+웹앱은 `/app/` 에 놓이는 것을 전제로 뿌리 기준 절대 경로를 씁니다
+(`tools/build_webapp.py` 의 `BASE`). `vercel.json` 이 `trailingSlash: false` 라
+`/app/` 이 `/app` 으로 되돌려지는데, 상대 경로였다면 이때 자산이 전부 404 납니다.
 
 배포 주소는 `tools/build_site.py` 의 `DEFAULT_BASE_URL` 에 고정돼 있습니다.
 OG 이미지와 canonical 이 절대 URL 이어야 링크 미리보기가 나오기 때문입니다.
@@ -119,14 +151,17 @@ OG 이미지와 canonical 이 절대 URL 이어야 링크 미리보기가 나오
 
 ### 빌드 자동화 (GitHub Actions)
 
-랜딩 소스를 고쳐서 push 하면 `.github/workflows/build-site.yml` 이
-`site/` 를 다시 만들고, 검사를 통과하면 커밋합니다. **손으로 빌드할 일이 없습니다.**
+랜딩이나 앱 소스를 고쳐서 push 하면 `.github/workflows/build-site.yml` 이
+`site/` 와 `site/app/` 을 다시 만들고, 검사를 통과하면 커밋합니다.
+**손으로 빌드할 일이 없습니다.**
 
 | 무엇을 고치면 | 자동으로 |
 |---|---|
 | `app/templates/landing.html` | `site/` 재빌드 → 검사 → 커밋 → Vercel 배포 |
 | `app/static/landing/**` (스타일·화면·카드) | 〃 |
-| `tools/build_site.py` | 〃 |
+| `app/templates/index.html`, `app/static/*.js`, `*.css` | 〃 (웹앱도 함께 다시 만듭니다) |
+| `knowledge/brand.json` | 〃 |
+| `tools/build_site.py`, `tools/build_webapp.py` | 〃 |
 
 - Pull Request 에서는 **검사만** 하고 커밋하지 않습니다.
 - 배포 주소는 `build_site.py` 의 `DEFAULT_BASE_URL` 을 씁니다. 다른 주소로 한 번만
@@ -136,13 +171,14 @@ OG 이미지와 canonical 이 절대 URL 이어야 링크 미리보기가 나오
 
 `tools/check_site.py` 가 배포 전에 다음을 확인하고, 하나라도 걸리면 배포를 막습니다.
 
-없는 자산 · 앱 경로로 가는 링크(공개 사이트에서 404) · 서버 API 참조 ·
+없는 자산 · 실물 없는 링크(눌렀을 때 404) · 서버 API 참조 ·
 메타 태그 누락 · API 키 문자열 혼입 · CRLF 혼입 · 과도한 용량
 
 | 경로 | 내용 |
 |---|---|
 | `/` | 랜딩페이지 |
 | `/cardnews-studio` | 같은 페이지 (지침서 권장 URL) |
+| `/app/` | **웹앱** — 서버 없이 브라우저에서 도는 본체 |
 
 ## 전략은 어디서 오나
 

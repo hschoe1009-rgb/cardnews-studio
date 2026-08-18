@@ -1,0 +1,65 @@
+{
+  "brand": "묘한마켓",
+  "brand_en": "MYOHAN MARKET",
+  "product": "묘한쿠션",
+  "product_en": "MYOHAN CUSHION",
+  "one_line": "혼자 있는 시간도 안정감 있게",
+  "overview": "묘한마켓은 바쁜 도시 반려인, 1인 가구, 맞벌이 부부를 위해 반려동물이 혼자 있는 시간에도 편안함과 안정감을 느끼도록 돕는 프리미엄 반려동물 용품 브랜드입니다. 묘한쿠션은 집사가 입던 옷으로 만드는 맞춤 리폼 쿠션입니다.",
+  "target": "25–45세 직장인 · 1인 가구 · 바쁜 맞벌이 부부",
+  "core_promise": "반려인의 빈자리를 대신해주는 조용한 안정감",
+  "keywords": ["조용함", "깨끗함", "신뢰감", "세심함", "CALM", "TRUST", "URBAN", "PREMIUM"],
+  "voice": {
+    "tone": "부드럽지만 정돈된. 과하게 귀엽지 않게. 단정한 존댓말.",
+    "avoid": ["손글씨체 말투", "유아적 표현", "과장된 의학적 단정", "지식의 저주(전문용어 나열)"],
+    "must": ["짧은 문장", "초등학생도 알아듣는 표현", "행동 하나를 남기는 마무리"]
+  },
+  "safety": "건강·행동 관련 주제는 단정하지 않는다. '지속되면 수의사와 상담하세요' 같은 고지를 마지막 카드에 넣는다.",
+  "themes": {
+    "navy": {
+      "label": "딥네이비 (브랜드 기본)",
+      "bg": "#162033",
+      "surface": "#1E2B42",
+      "ink": "#FFFFFF",
+      "ink_sub": "#C6CCD8",
+      "accent": "#F4D77B",
+      "line": "#6F7685",
+      "grid": "#28374F",
+      "ratio": "70% Navy / 20% White & Grey / 10% Yellow Accent"
+    },
+    "cream": {
+      "label": "크림 (기존 카드뉴스)",
+      "bg": "#FFF6EC",
+      "surface": "#FFFFFF",
+      "ink": "#3E3935",
+      "ink_sub": "#7A6F65",
+      "accent": "#E2A84F",
+      "line": "#8E735F",
+      "grid": "#E9DED2"
+    },
+    "sage": {
+      "label": "세이지",
+      "bg": "#A7B69D",
+      "surface": "#F3F6F1",
+      "ink": "#2C3529",
+      "ink_sub": "#54604F",
+      "accent": "#E2A84F",
+      "line": "#6E7D66",
+      "grid": "#93A58B"
+    },
+    "wine": {
+      "label": "와인 (묘한쿠션 260729)",
+      "bg": "#F6EFE6",
+      "surface": "#FFFFFF",
+      "ink": "#7A1B2B",
+      "ink_sub": "#4A423C",
+      "accent": "#7A1B2B",
+      "line": "#B08A6B",
+      "grid": "#E7DAC9"
+    }
+  },
+  "image_style": "차분한 도시 실내, 넓은 여백, 부드러운 자연광. 과장된 표정이 아니라 반려동물이 안정적으로 쉬는 장면. 깨끗한 소재감. 사진 같은 사실적 렌더링. 텍스트·글자·로고·워터마크 없음.",
+  "image_avoid": "발바닥·뼈다귀·하트 모티프, 만화체, 과한 채도, 이미지 내 텍스트",
+  "image_style_en": "A calm, tidy modern Korean apartment interior. Generous negative space, soft natural window light, muted warm neutrals. The pet rests naturally and unposed, with a relaxed expression rather than an exaggerated one. Clean, honest material texture in fabric and wood. Documentary lifestyle photography, shot on a 50mm lens at a wide aperture.",
+  "image_avoid_en": "No paw-print, bone, or heart motifs. No cartoon, illustration, or 3D-render look. No oversaturated or heavily filtered colour. No cluttered backgrounds, no studio seamless backdrop, no people's faces in focus, no exaggerated sad or pleading pet expressions.",
+  "store": "묘한마켓 스마트스토어"
+}

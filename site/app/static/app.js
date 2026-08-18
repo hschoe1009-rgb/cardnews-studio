@@ -1,4 +1,4 @@
-import { renderCard, CANVAS_W, CANVAS_H } from '/static/card.js';
+import { renderCard, CANVAS_W, CANVAS_H } from '/app/static/card.js';
 
 const $ = (id) => document.getElementById(id);
 const state = {

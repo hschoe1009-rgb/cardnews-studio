@@ -53,16 +53,20 @@ def main() -> int:
     else:
         ok(f"참조 자산 {len(refs)}개 모두 존재")
 
-    # 3) 앱 경로로 가는 <a> 링크가 남아 있지 않은가 (공개 사이트엔 앱이 없다).
+    # 3) 눌렀을 때 404 나는 <a> 링크가 없는가.
+    #    site/ 안에 실물이 있으면 통과한다. 폴더 링크(/app/)는 index.html 을 본다.
     #    canonical 같은 <link> 는 대상이 아니다. 사용자가 눌러서 404 를 만나는 것만 본다.
-    app_links = sorted({
-        h for h in re.findall(r'<a\s[^>]*\shref="(/[^"]*)"', html)
-        if not h.startswith("/static/")
-    })
-    if app_links:
-        fail(f"앱 경로 링크가 남아 있습니다(공개 사이트에서 404): {app_links}")
+    dead = []
+    for h in sorted({m for m in re.findall(r'<a\s[^>]*\shref="(/[^"]*)"', html)}):
+        target = SITE / h.lstrip("/")
+        if target.is_dir():
+            target = target / "index.html"
+        if not target.exists():
+            dead.append(h)
+    if dead:
+        fail(f"실물 없는 링크가 있습니다(공개 사이트에서 404): {dead}")
     else:
-        ok("앱 경로 링크 없음")
+        ok("모든 링크에 실물 있음")
 
     # 4) 서버 API 를 부르지 않는가
     if "/api/" in html:
