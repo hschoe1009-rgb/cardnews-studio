@@ -1,0 +1,71 @@
+/* 스테이지 전용 스타일 — 편집 미리보기와 PNG 내보내기가 공유 */
+
+/* 기존 묘한쿠션 카드뉴스와 같은 서체를 쓴다 */
+@font-face {
+  font-family: 'Pretendard';
+  src: url('/static/fonts/Pretendard-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-display: block;
+}
+@font-face {
+  font-family: 'Pretendard';
+  src: url('/static/fonts/Pretendard-Bold.otf') format('opentype');
+  font-weight: 700 900;
+  font-display: block;
+}
+
+.stage {
+  position: relative;
+  overflow: hidden;
+  font-family: 'Pretendard', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  transform-origin: top left;
+}
+
+.card-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.card-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* 페이지 번호(.card-head)와 브랜드 마크(.card-foot)는 더 이상 그리지 않는다. */
+
+.layer {
+  position: absolute;
+  white-space: pre-wrap;
+  word-break: keep-all;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.35);
+}
+
+.layer.sticker {
+  border-radius: 999px;
+  padding: 22px 10px;
+  text-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1;
+  transform: rotate(-8deg);
+}
+
+/* 편집 모드 표시 — 내보내기에서는 editable 클래스가 붙지 않는다 */
+.layer.editable {
+  outline: 1px dashed transparent;
+  cursor: move;
+}
+
+.layer.editable:hover {
+  outline-color: rgba(255, 255, 255, 0.45);
+}
+
+.layer.editable.selected {
+  outline: 2px solid #4da3ff;
+  outline-offset: 2px;
+}

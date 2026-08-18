@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>카드뉴스 스튜디오 | 주제 입력부터 생성·DB 저장까지</title>
+<meta name="description" content="주제를 입력하면 주제에 맞는 카드 구성과 문구·이미지 초안을 만들고, 직접 편집해 완성본은 PNG·ZIP으로, 제작 데이터는 엑셀 DB로 남기는 카드뉴스 자동생성기입니다.">
+<link rel="canonical" href="/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="카드뉴스 스튜디오">
+<meta property="og:description" content="주제만 입력하면 카드뉴스를 만들고, 제작 데이터까지 DB로 남기는 자동생성기.">
+<meta property="og:image" content="/static/landing/og-cardnews-studio.png">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#162033">
+<link rel="icon" href="/static/landing/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/static/landing/landing.css">
+</head>
+<body id="top">
+
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+
+<!-- ─────────────── 1. 헤더 -->
+<header class="site-header on-navy" id="siteHeader">
+  <div class="wrap">
+    <a class="brand" href="#top">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-text">
+        <b>카드뉴스 스튜디오</b>
+        <span>카드뉴스 자동생성기</span>
+      </span>
+    </a>
+
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="siteNav" aria-label="메뉴 열기">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav class="site-nav" id="siteNav" aria-label="주요 메뉴">
+      <ul>
+        <li><a href="#features">기능</a></li>
+        <li><a href="#flow">사용 흐름</a></li>
+        <li><a href="#results">결과물</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+    </nav>
+
+    <a class="btn btn-primary header-cta" href="#setup" data-ev="click_primary_cta">카드뉴스 만들기</a>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ─────────────── 2. 히어로 -->
+<section class="hero on-navy" aria-labelledby="heroTitle">
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">CARDNEWS STUDIO</p>
+      <h1 id="heroTitle">주제만 입력하세요.<br><span class="accent">카드뉴스와 데이터</span>가<br>함께 남습니다.</h1>
+      <p class="lead">주제에 맞는 구성·문구·이미지 초안을 만들고, 1080×1350 캔버스에서 직접 편집합니다. 완성 카드뉴스는 PNG·ZIP으로, 제작 데이터는 엑셀 DB로 저장합니다.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#setup" data-ev="click_primary_cta">카드뉴스 만들기</a>
+        <a class="btn btn-ghost" href="#results" data-ev="click_preview">완성본 미리보기</a>
+      </div>
+      <p class="cta-note">
+        <span>로컬 실행</span>
+        <span>Anthropic API 키 필요</span>
+        <span>이미지는 OpenAI 자동 생성 또는 직접 업로드</span>
+      </p>
+    </div>
+
+    <div class="hero-shot">
+      <div class="frame">
+        <img src="/static/landing/shots/03-editor.webp" width="1600" height="1000" fetchpriority="high"
+             alt="카드뉴스 스튜디오의 1080×1350 카드 편집 화면. 왼쪽에 카드 목록, 가운데 카드 캔버스, 오른쪽에 레이어 인스펙터가 있다.">
+      </div>
+      <div class="hero-cards" aria-hidden="true">
+        <img src="/static/landing/cards/card-03.webp" width="720" height="900" alt="">
+        <img src="/static/landing/cards/card-05.webp" width="720" height="900" alt="">
+        <img src="/static/landing/cards/card-07.webp" width="720" height="900" alt="">
+      </div>
+      <p class="shot-caption">실제 편집 화면과 이 프로그램으로 만든 완성 카드입니다. 배경은 AI 생성 이미지입니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────── 3. 문제 공감 -->
+<section class="problem" aria-labelledby="problemTitle">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">PROBLEM</p>
+      <h2 id="problemTitle">카드뉴스는 만들었는데,<br>제작 데이터는 어디에 남아 있나요?</h2>
+    </div>
+    <div class="grid-3">
+      <article class="pcard reveal">
+        <span class="num">1</span>
+        <h3>구성이 막힙니다</h3>
+        <p>주제는 있지만 첫 장의 훅부터 마지막 CTA까지 연결하기 어렵습니다.</p>
+      </article>
+      <article class="pcard reveal">
+        <span class="num">2</span>
+        <h3>작업이 흩어집니다</h3>
+        <p>문구, 이미지, 캡션, 완성 파일이 서로 다른 창과 폴더에 남습니다.</p>
+      </article>
+      <article class="pcard reveal">
+        <span class="num">3</span>
+        <h3>기록이 사라집니다</h3>
+        <p>어떤 주제·전략·문구로 만들었는지 남지 않아 다음 작업에서 다시 처음부터 시작합니다.</p>
+      </article>
+    </div>
+    <p class="bridge reveal">카드뉴스 스튜디오는 이 과정을 하나의 제작 흐름으로 연결합니다.</p>
+  </div>
+</section>
+
+<!-- ─────────────── 4. 핵심 해결책 -->
+<section class="solution on-navy" aria-labelledby="solutionTitle">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">SOLUTION</p>
+      <h2 id="solutionTitle">카드뉴스는 자동으로 시작하고,<br>데이터는 자동으로 쌓이게.</h2>
+      <p class="lead">입력한 주제를 바탕으로 카드 구성과 문구·이미지 초안을 만들고, 문구·레이어·배경·캡션을 화면에서 직접 다듬습니다. 완성본을 내보낼 때 주제·전략·카드 문구·캡션·상태가 DB에 함께 기록됩니다.</p>
+    </div>
+    <div class="pillars">
+      <div class="pillar reveal"><b>STEP 01</b><p>주제에 맞는 초안을 만들고</p></div>
+      <div class="pillar reveal"><b>STEP 02</b><p>화면에서 직접 수정하고</p></div>
+      <div class="pillar reveal"><b>STEP 03</b><p>완성 파일과 DB 기록을 한 번에</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────── 5. 사용 흐름 -->
+<section class="flow" id="flow" aria-labelledby="flowTitle">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">HOW IT WORKS</p>
+      <h2 id="flowTitle">한 줄의 주제가 결과물이 되기까지</h2>
+    </div>
+    <div class="steps">
+      <article class="step reveal"><span class="n">1</span>
+        <h3>주제 또는 원문 넣기</h3>
+        <p>주제 한 줄로 시작하거나 <code>.md</code>·<code>.txt</code>와 붙여넣은 글을 요약해 주제 후보를 고릅니다.</p></article>
+      <article class="step reveal"><span class="n">2</span>
+        <h3>키워드와 전략 고르기</h3>
+        <p>핵심·검색 키워드와 서로 다른 앵글 3개를 확인하고 하나를 선택합니다.</p></article>
+      <article class="step reveal"><span class="n">3</span>
+        <h3>카드 구성 만들기</h3>
+        <p>3~10장의 역할, 문구, 캡션, 해시태그와 이미지 프롬프트 초안을 만듭니다.</p></article>
+      <article class="step reveal"><span class="n">4</span>
+        <h3>캔버스에서 다듬기</h3>
+        <p>텍스트를 끌어 옮기고 바로 수정하며, 배경 이미지와 초점·어둡기를 조정합니다.</p></article>
+      <article class="step reveal"><span class="n">5</span>
+        <h3>내보내고 DB에 쌓기</h3>
+        <p>1080×1350 PNG와 ZIP을 받고, 주제·전략·카드 문구·캡션·상태를 엑셀 DB에 남깁니다.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────── 6. 실제 기능 -->
+<section class="features" id="features" aria-labelledby="featuresTitle">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">FEATURES</p>
+      <h2 id="featuresTitle">생성에서 끝나지 않는 제작 기능</h2>
+      <p class="lead">아래 기능은 모두 현재 프로그램에서 실제로 동작하는 것만 적었습니다.</p>
+    </div>
+
+    <div class="fgrid" id="featureGrid">
+      <article class="fcard reveal"><h3>주제 한 줄로 시작</h3><p>짧은 주제를 넣어 키워드와 전략 앵글을 만듭니다.</p></article>
+      <article class="fcard reveal"><h3>원문에서 주제 추출</h3><p><code>.md</code>·<code>.txt</code> 또는 붙여넣은 글을 요약하고 주제 후보 3개를 제안합니다.</p></article>
+      <article class="fcard reveal"><h3>전략 앵글 3안</h3><p>컨셉 축이 다른 앵글을 비교하고 하나를 선택합니다.</p></article>
+      <article class="fcard reveal"><h3>3~10장 카드 구성</h3><p>선택한 전략으로 카드 역할·문구·캡션·해시태그 초안을 만듭니다.</p></article>
+      <article class="fcard reveal"><h3>드래그·인라인 편집</h3><p>4:5 캔버스에서 텍스트 레이어를 옮기고 더블클릭해 바로 고칩니다.</p></article>
+      <article class="fcard reveal"><h3>PNG·ZIP 출력과 DB 기록</h3><p>화면과 같은 1080×1350 PNG를 내보내고, 제작 데이터를 엑셀 DB에 남깁니다.</p></article>
+
+      <article class="fcard" hidden><h3>레이어 세부 조정</h3><p>위치, 폭, 크기, 굵기, 행간, 정렬, 색을 조정합니다.</p></article>
+      <article class="fcard" hidden><h3>카드 문구 재작성</h3><p>카드 한 장을 추가 지시와 함께 다시 씁니다.</p></article>
+      <article class="fcard" hidden><h3>장면 다시 설계</h3><p>현재 카드 문구에 맞춰 이미지 장면 프롬프트를 다시 만듭니다.</p></article>
+      <article class="fcard" hidden><h3>배경 이미지 선택 방식</h3><p>OpenAI API로 자동 생성하거나, 프롬프트를 복사한 뒤 만든 이미지를 업로드합니다.</p></article>
+      <article class="fcard" hidden><h3>이미지 초점·어둡기</h3><p>업로드하거나 생성한 이미지의 초점 X·Y와 오버레이 강도를 조절합니다.</p></article>
+      <article class="fcard" hidden><h3>발행 문구 관리</h3><p>캡션, 댓글 CTA, 다음 편 예고, 해시태그, 상태, 메모를 편집합니다.</p></article>
+      <article class="fcard" hidden><h3>프로젝트 보관함</h3><p>지난 프로젝트를 다시 열거나 삭제하고 엑셀 DB를 내려받습니다.</p></article>
+      <article class="fcard" hidden><h3>시각 테마 4종</h3><p>딥네이비, 크림, 세이지, 와인 테마를 제공합니다.</p></article>
+      <article class="fcard" hidden><h3>자가진단과 안전 기준</h3><p>첫 장 후킹·가독성·계정 적합성·저장 이유를 점검하고, 건강·행동 주제에는 상담 고지를 적용합니다.</p></article>
+    </div>
+
+    <div class="more-row">
+      <button class="btn btn-ghost" id="moreFeatures" aria-expanded="false" aria-controls="featureGrid" data-ev="open_feature_tab">
+        전체 기능 보기
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────── 7. 편집 화면 집중 소개 -->
+<section class="editor-sec on-navy" aria-labelledby="editorTitle">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">EDITOR</p>
+      <h2 id="editorTitle">보이는 그대로 고치고,<br>같은 모습으로 내보냅니다.</h2>
+      <p class="lead">1080×1350 캔버스에서 텍스트 레이어를 드래그하고 더블클릭해 수정합니다. 편집 화면과 PNG 렌더가 같은 카드 스크립트와 스타일을 사용해 화면과 결과물의 차이를 줄였습니다.</p>
+    </div>
+
+    <div class="tabs" role="tablist" aria-label="화면별 기능">
+      <button role="tab" id="tab-strategy" aria-controls="panel-strategy" aria-selected="true" data-ev="open_feature_tab">전략</button>
+      <button role="tab" id="tab-edit" aria-controls="panel-edit" aria-selected="false" tabindex="-1" data-ev="open_feature_tab">편집</button>
+      <button role="tab" id="tab-image" aria-controls="panel-image" aria-selected="false" tabindex="-1" data-ev="open_feature_tab">이미지</button>
+      <button role="tab" id="tab-store" aria-controls="panel-store" aria-selected="false" tabindex="-1" data-ev="open_feature_tab">출력·보관</button>
+    </div>
+
+    <div class="tabpanel" role="tabpanel" id="panel-strategy" aria-labelledby="tab-strategy" tabindex="0">
+      <div class="frame">
+        <img src="/static/landing/shots/02-strategy.webp" width="1600" height="1000" loading="lazy"
+             alt="키워드와 세 가지 전략 앵글을 고르는 화면">
+      </div>
+      <ul class="callouts">
+        <li><b>좁힌 주제와 타깃</b> — 입력한 주제를 더 좁히고 대상을 정리합니다.</li>
+        <li><b>핵심·검색 키워드</b> — 본문에 쓸 말과 검색용 말을 나눠 보여줍니다.</li>
+        <li><b>앵글 3안</b> — 컨셉 축이 서로 다른 후보를 나란히 비교합니다.</li>
+        <li><b>선택 근거</b> — 각 앵글에 후킹·퍼널 단계·CTA 키워드가 함께 붙습니다.</li>
+      </ul>
+    </div>
+
+    <div class="tabpanel" role="tabpanel" id="panel-edit" aria-labelledby="tab-edit" tabindex="0" hidden>
+      <div class="frame">
+        <img src="/static/landing/shots/06-canvas.webp" width="1600" height="2048" loading="lazy"
+             alt="카드 캔버스에서 문구를 편집하는 화면 확대 컷">
+      </div>
+      <ul class="callouts">
+        <li><b>카드 순서와 썸네일</b> — 왼쪽 목록에서 장을 옮겨 다닙니다.</li>
+        <li><b>드래그·더블클릭</b> — 위치를 끌어 옮기고 그 자리에서 문구를 고칩니다.</li>
+        <li><b>레이어 조정</b> — 위치·크기·굵기·행간·정렬·색을 다룹니다.</li>
+        <li><b>카드 문구 재작성</b> — 한 장만 다시 쓰도록 요청할 수 있습니다.</li>
+      </ul>
+    </div>
+
+    <div class="tabpanel" role="tabpanel" id="panel-image" aria-labelledby="tab-image" tabindex="0" hidden>
+      <div class="frame">
+        <img src="/static/landing/shots/04c-image.webp" width="660" height="2434" loading="lazy"
+             alt="배경 이미지를 생성하거나 업로드하는 인스펙터 화면">
+      </div>
+      <ul class="callouts">
+        <li><b>장면 다시 잡기</b> — 지금 카드에 적힌 글에 맞춰 장면을 다시 설계합니다.</li>
+        <li><b>자동 생성 또는 업로드</b> — OpenAI로 만들거나 직접 만든 이미지를 넣습니다.</li>
+        <li><b>프롬프트 복사</b> — OpenAI 키 없이 외부 도구를 쓸 수 있습니다.</li>
+        <li><b>초점·어둡기</b> — 글자가 잘 읽히도록 배경을 맞춥니다.</li>
+      </ul>
+    </div>
+
+    <div class="tabpanel" role="tabpanel" id="panel-store" aria-labelledby="tab-store" tabindex="0" hidden>
+      <div class="frame">
+        <img src="/static/landing/shots/05-library.webp" width="1600" height="1000" loading="lazy"
+             alt="지난 프로젝트를 다시 열고 엑셀 DB를 내려받는 보관함 화면">
+      </div>
+      <ul class="callouts">
+        <li><b>발행 문구</b> — 캡션·댓글 CTA·다음 편 예고·해시태그·상태를 정리합니다.</li>
+        <li><b>PNG 내보내기</b> — 화면과 같은 1080×1350 파일로 저장합니다.</li>
+        <li><b>ZIP 받기</b> — PNG와 <code>caption.txt</code>를 한 번에 내려받습니다.</li>
+        <li><b>보관함과 DB</b> — 지난 편을 다시 열고 엑셀 기록을 내려받습니다.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────── 8. 결과물 쇼케이스 -->
+<section class="results" id="results" aria-labelledby="resultsTitle">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">OUTPUT</p>
+      <h2 id="resultsTitle">완성 카드뉴스와<br>제작 데이터가 함께 남습니다.</h2>
+      <p class="lead">아래는 이 프로그램으로 만든 7장 구성 카드뉴스입니다. 카드를 누르면 크게 볼 수 있습니다.</p>
+    </div>
+
+    <div class="gallery" id="gallery" role="list" aria-label="완성 카드뉴스 7장">
+      <button class="gcard" role="listitem" data-full="/static/landing/cards/card-01.webp" data-cap="1 / 7 · 커버" data-ev="open_result_lightbox">
+        <img src="/static/landing/cards/card-01.webp" width="720" height="900" loading="lazy" alt="주제에 맞게 생성된 카드뉴스 1번 커버 카드"></button>
+      <button class="gcard" role="listitem" data-full="/static/landing/cards/card-02.webp" data-cap="2 / 7 · 문제 제기" data-ev="open_result_lightbox">
+        <img src="/static/landing/cards/card-02.webp" width="720" height="900" loading="lazy" alt="카드뉴스 2번 문제 제기 카드"></button>
+      <button class="gcard" role="listitem" data-full="/static/landing/cards/card-03.webp" data-cap="3 / 7 · 원인" data-ev="open_result_lightbox">
+        <img src="/static/landing/cards/card-03.webp" width="720" height="900" loading="lazy" alt="카드뉴스 3번 원인 설명 카드"></button>
+      <button class="gcard" role="listitem" data-full="/static/landing/cards/card-04.webp" data-cap="4 / 7 · 해결 제안" data-ev="open_result_lightbox">
+        <img src="/static/landing/cards/card-04.webp" width="720" height="900" loading="lazy" alt="카드뉴스 4번 해결 제안 카드"></button>
+      <button class="gcard" role="listitem" data-full="/static/landing/cards/card-05.webp" data-cap="5 / 7 · 실행 방법" data-ev="open_result_lightbox">
+        <img src="/static/landing/cards/card-05.webp" width="720" height="900" loading="lazy" alt="카드뉴스 5번 실행 방법 카드"></button>
+      <button class="gcard" role="listitem" data-full="/static/landing/cards/card-06.webp" data-cap="6 / 7 · 상품 연결" data-ev="open_result_lightbox">
+        <img src="/static/landing/cards/card-06.webp" width="720" height="900" loading="lazy" alt="카드뉴스 6번 상품 연결 카드"></button>
+      <button class="gcard" role="listitem" data-full="/static/landing/cards/card-07.webp" data-cap="7 / 7 · 마무리 CTA" data-ev="open_result_lightbox">
+        <img src="/static/landing/cards/card-07.webp" width="720" height="900" loading="lazy" alt="카드뉴스 7번 마무리 CTA 카드"></button>
+    </div>
+
+    <div class="gallery-nav">
+      <button id="galPrev" aria-label="이전 카드 보기">←</button>
+      <button id="galNext" aria-label="다음 카드 보기">→</button>
+    </div>
+
+    <div class="outputs">
+      <div class="output reveal"><b>카드별 PNG</b><span>1080×1350 크기로 카드 한 장씩 저장됩니다.</span></div>
+      <div class="output reveal"><b>ZIP 묶음</b><span>PNG와 <code>caption.txt</code>를 한 번에 내려받습니다.</span></div>
+      <div class="output reveal"><b>발행 문구</b><span>캡션·댓글 CTA·해시태그가 함께 정리됩니다.</span></div>
+      <div class="output reveal"><b>프로젝트 파일</b><span>프로젝트 JSON과 배경 이미지가 폴더에 남습니다.</span></div>
+      <div class="output reveal"><b>엑셀 DB</b><span>카드뉴스·카드·템플릿 단위로 기록이 쌓입니다.</span></div>
+    </div>
+
+    <p class="sample-note">위 카드의 배경은 AI로 생성한 샘플 이미지입니다. 실제 촬영 사진이 아니며, 문구와 구성은 사용자가 편집한 결과입니다.</p>
+  </div>
+</section>
+
+<!-- ─────────────── 9. 로컬 실행과 키 안내 -->
+<section class="setup" id="setup" aria-labelledby="setupTitle">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">SETUP</p>
+      <h2 id="setupTitle">내 PC에서 실행하고,<br>내 키로 연결합니다.</h2>
+      <p class="lead">프로그램은 로컬 서버에서 실행됩니다. 텍스트 생성에는 Anthropic API 키가 필요합니다. 배경 이미지는 OpenAI API로 자동 생성하거나, 프롬프트를 복사해 외부에서 만든 이미지를 직접 넣을 수 있습니다.</p>
+    </div>
+    <div class="setup-grid">
+      <div class="scard reveal"><b>1. 실행</b><p><code>run.bat</code> 더블클릭으로 최초 환경 설치와 앱 실행이 진행됩니다.</p></div>
+      <div class="scard reveal"><b>2. 키 입력</b><p>사용자가 입력한 키는 기본적으로 해당 브라우저에 저장되고, 요청할 때만 전달됩니다.</p></div>
+      <div class="scard reveal"><b>3. 이미지 선택</b><p>수동 모드에서는 OpenAI 키 없이 프롬프트 복사와 이미지 업로드를 사용할 수 있습니다.</p></div>
+      <div class="scard reveal"><b>4. 비용</b><p>이미지 생성 등 외부 API 사용 비용은 각 제공사 정책에 따라 발생합니다.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────── 10. 신뢰 요소 -->
+<section class="trust" aria-labelledby="trustTitle">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">WHY IT HOLDS UP</p>
+      <h2 id="trustTitle">완성본만 저장하지 않고,<br>제작 과정까지 기록합니다.</h2>
+    </div>
+    <div class="tlist">
+      <div class="titem reveal"><b>내장 전략 플레이북</b>컨셉 축·글 포맷·구매 구조·CTA 기준을 생성 기준으로 사용합니다.</div>
+      <div class="titem reveal"><b>원문 범위 제약</b>원문 모드에서는 원문에 없는 사실을 만들지 않도록 프롬프트로 제한합니다.</div>
+      <div class="titem reveal"><b>민감 주제 고지</b>건강·행동 관련 내용에는 상담 고지 기준을 적용합니다.</div>
+      <div class="titem reveal"><b>발행 전 자가진단</b>첫 장 후킹·가독성·주제 적합성·저장 이유를 점검 항목으로 제공합니다.</div>
+      <div class="titem reveal"><b>로컬 기록 보관</b>프로젝트와 카드 단위 기록을 로컬 파일과 엑셀에 남깁니다.</div>
+      <div class="titem reveal"><b>화면과 출력 일치</b>편집 화면과 PNG 출력이 같은 카드 렌더 자산을 공유합니다.</div>
+    </div>
+    <p class="disclaimer">위 항목은 제작을 돕는 장치입니다. AI 출력의 사실성이나 법적·의학적 정확성을 보증하지 않습니다. 수치·효능·전문 정보와 최종 문구는 게시 전에 사용자가 직접 확인해야 합니다.</p>
+  </div>
+</section>
+
+<!-- ─────────────── 11. FAQ -->
+<section class="faq" id="faq" aria-labelledby="faqTitle">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">FAQ</p>
+      <h2 id="faqTitle">자주 묻는 질문</h2>
+    </div>
+    <div class="faq-list" id="faqList"></div>
+  </div>
+</section>
+
+<!-- ─────────────── 12. 최종 CTA -->
+<section class="final on-navy" aria-labelledby="finalTitle">
+  <div class="wrap">
+    <p class="eyebrow">START</p>
+    <h2 id="finalTitle">다음 카드뉴스,<br>주제 한 줄에서 시작하세요.</h2>
+    <p class="lead">전략을 고르고, 화면에서 다듬고, 게시할 파일과 기록까지 한 번에 남겨보세요.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="#setup" data-ev="click_primary_cta">카드뉴스 만들기</a>
+      <a class="btn btn-ghost" href="#setup" data-ev="open_setup_guide">실행 방법 보기</a>
+    </div>
+    <p class="cta-note">
+      <span>로컬 프로그램</span>
+      <span>개인 API 키 사용</span>
+      <span>최종 발행 전 사용자 검토 필요</span>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<!-- ─────────────── 13. 푸터 -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <b style="color:#fff">카드뉴스 스튜디오</b> · 카드뉴스 자동생성기
+    </div>
+    <nav aria-label="푸터 메뉴">
+      <ul>
+        <li><a href="#features">기능</a></li>
+        <li><a href="#flow">사용 흐름</a></li>
+        <li><a href="#results">결과물</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+    </nav>
+    <div class="copy">주제 입력부터 카드뉴스 생성·DB 저장까지</div>
+  </div>
+</footer>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="카드 크게 보기">
+  <button class="close" id="lbClose" aria-label="닫기">✕</button>
+  <img id="lbImg" src="" alt="">
+  <p class="lb-cap" id="lbCap"></p>
+</div>
+
+<script src="/static/landing/landing.js"></script>
+</body>
+</html>

@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>카드뉴스 스튜디오</title>
+<link rel="stylesheet" href="/static/card.css">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="/cardnews-studio"><b>카드뉴스 스튜디오</b><span>카드뉴스 자동생성기</span></a>
+  <nav class="tabs">
+    <button class="tab active" data-view="create">1 · 주제</button>
+    <button class="tab" data-view="angle">2 · 키워드 · 전략</button>
+    <button class="tab" data-view="editor">3 · 편집</button>
+    <button class="tab" data-view="library">보관함</button>
+    <button class="tab" data-view="settings">설정</button>
+  </nav>
+  <div class="topbar-right">
+    <span id="status" class="status"></span>
+  </div>
+</header>
+
+<main>
+
+<!-- ─────────────────────────── 1. 주제 -->
+<section class="view active" id="view-create">
+  <div class="pane narrow">
+    <h1>어떤 주제로 만들까요?</h1>
+    <p class="lead">
+      옵시디언의 <code>컨셉의정석 · 스레드 · 자동퍼널</code> 노트를 근거로
+      고객 유입 전략에 맞춘 카드뉴스를 구성합니다.
+    </p>
+
+    <div class="modeswitch">
+      <button class="mode active" data-mode="topic">주제만 입력</button>
+      <button class="mode" data-mode="source">원문에서 만들기</button>
+    </div>
+
+    <!-- 원문 입력 -->
+    <div id="source-box" hidden>
+      <label class="field">
+        <span>MD 파일 / 블로그 글을 붙여넣으세요</span>
+        <textarea id="source-text" rows="10"
+          placeholder="블로그 글이나 .md 노트 내용을 통째로 붙여넣으세요. Claude가 요약하고 카드뉴스 주제를 뽑아줍니다."></textarea>
+      </label>
+      <div class="row">
+        <label class="field">
+          <span>출처 표시 <em>(선택)</em></span>
+          <input id="source-origin" type="text" placeholder="예: 네이버 블로그 260810 / 상세페이지 기획안">
+        </label>
+        <label class="field small" style="flex:0 0 150px">
+          <span>파일에서 불러오기</span>
+          <label class="filebtn">
+            <input type="file" id="source-file" accept=".md,.markdown,.txt,text/*" hidden>
+            .md / .txt 열기
+          </label>
+        </label>
+      </div>
+      <div class="row">
+        <button class="primary" id="btn-summarize" style="flex:1">원문 요약하고 주제 뽑기</button>
+        <button class="ghost" id="btn-clear-source" style="flex:0 0 90px;margin:0">비우기</button>
+      </div>
+      <div id="source-meta" class="hint"></div>
+      <div id="source-summary" class="summary" hidden></div>
+    </div>
+
+    <label class="field">
+      <span>주제</span>
+      <input id="topic" type="text" placeholder="예: 집사 없을 때 고양이가 우는 이유">
+    </label>
+
+    <label class="field">
+      <span>추가 메모 <em>(선택)</em></span>
+      <textarea id="topic-note" rows="3"
+        placeholder="예: 이번 주 체험단 모집과 연결하고 싶어요 / 신규 유입용으로"></textarea>
+    </label>
+
+    <div class="row">
+      <label class="field small">
+        <span>카드 수</span>
+        <select id="card-count">
+          <option>5</option><option selected>7</option><option>9</option>
+        </select>
+      </label>
+      <label class="field small">
+        <span>테마</span>
+        <select id="theme-key"></select>
+      </label>
+    </div>
+
+    <button class="primary big" id="btn-keywords">키워드 · 전략 뽑기</button>
+    <p class="hint" id="create-hint"></p>
+  </div>
+</section>
+
+<!-- ─────────────────────────── 2. 키워드 · 앵글 -->
+<section class="view" id="view-angle">
+  <div class="pane">
+    <h1>전략을 고르세요</h1>
+    <div id="keyword-summary" class="summary"></div>
+    <h2>앵글 후보</h2>
+    <p class="lead small">컨셉 5축 중 서로 다른 축으로 뽑았습니다. 하나를 고르면 카드 구성을 만듭니다.</p>
+    <div id="angles" class="angles"></div>
+    <label class="field">
+      <span>구성에 반영할 요청 <em>(선택)</em></span>
+      <textarea id="compose-note" rows="2" placeholder="예: 3번 카드는 실제 후기 느낌으로"></textarea>
+    </label>
+    <button class="primary big" id="btn-compose" disabled>이 앵글로 카드 구성하기</button>
+  </div>
+</section>
+
+<!-- ─────────────────────────── 3. 편집 -->
+<section class="view" id="view-editor">
+  <div class="editor">
+
+    <aside class="filmstrip" id="filmstrip"></aside>
+
+    <div class="canvas-wrap">
+      <div class="canvas-tools">
+        <button id="btn-prev">◀</button>
+        <span id="card-label">1 / 7</span>
+        <button id="btn-next">▶</button>
+        <span class="spacer"></span>
+        <button id="btn-export">PNG 내보내기</button>
+        <button id="btn-download">ZIP 받기</button>
+        <button class="primary" id="btn-save">저장 · DB 기록</button>
+      </div>
+      <div class="canvas-scroll">
+        <div class="canvas-scaler" id="scaler">
+          <div id="stage"></div>
+        </div>
+      </div>
+      <p class="hint">텍스트를 끌어 위치를 바꾸고, 더블클릭해 바로 고칠 수 있습니다.</p>
+    </div>
+
+    <aside class="inspector">
+      <div class="insp-tabs">
+        <button class="itab active" data-panel="layer">레이어</button>
+        <button class="itab" data-panel="card">카드</button>
+        <button class="itab" data-panel="image">이미지</button>
+        <button class="itab" data-panel="post">발행</button>
+      </div>
+
+      <div class="ipanel active" id="panel-layer">
+        <div id="layer-empty" class="empty">캔버스에서 텍스트를 클릭하세요.</div>
+        <div id="layer-form" hidden>
+          <label class="field"><span>내용</span><textarea id="l-text" rows="4"></textarea></label>
+          <div class="row">
+            <label class="field small"><span>X %</span><input id="l-x" type="number" step="0.5"></label>
+            <label class="field small"><span>Y %</span><input id="l-y" type="number" step="0.5"></label>
+            <label class="field small"><span>폭 %</span><input id="l-w" type="number" step="1"></label>
+          </div>
+          <div class="row">
+            <label class="field small"><span>크기</span><input id="l-size" type="number" step="1"></label>
+            <label class="field small"><span>굵기</span>
+              <select id="l-weight"><option>400</option><option>500</option><option>600</option><option>700</option><option>800</option><option>900</option></select>
+            </label>
+            <label class="field small"><span>행간</span><input id="l-lh" type="number" step="0.05"></label>
+          </div>
+          <div class="row">
+            <label class="field small"><span>정렬</span>
+              <select id="l-align"><option value="left">왼쪽</option><option value="center">가운데</option><option value="right">오른쪽</option></select>
+            </label>
+            <label class="field small"><span>색</span><input id="l-color" type="color"></label>
+          </div>
+          <button class="danger ghost" id="btn-del-layer">이 레이어 삭제</button>
+        </div>
+      </div>
+
+      <div class="ipanel" id="panel-card">
+        <label class="field"><span>역할</span><input id="c-role" type="text" readonly></label>
+        <label class="field"><span>배지</span><input id="c-badge" type="text"></label>
+        <label class="field"><span>타이틀</span><textarea id="c-title" rows="2"></textarea></label>
+        <label class="field"><span>서브</span><textarea id="c-subtitle" rows="2"></textarea></label>
+        <label class="field"><span>본문</span><textarea id="c-body" rows="3"></textarea></label>
+        <label class="field"><span>노트</span><textarea id="c-note" rows="2"></textarea></label>
+        <label class="field"><span>팁 스티커</span><input id="c-tip" type="text"></label>
+        <button class="ghost" id="btn-relayout">이 내용으로 레이어 다시 배치</button>
+        <hr>
+        <label class="field"><span>Claude에게 고쳐달라기</span>
+          <textarea id="c-instruction" rows="2" placeholder="예: 후킹을 숫자로 바꿔줘"></textarea>
+        </label>
+        <button class="ghost" id="btn-rewrite">이 카드 다시 쓰기</button>
+      </div>
+
+      <div class="ipanel" id="panel-image">
+        <div class="thumb" id="img-thumb"></div>
+        <label class="field"><span>추가 지시 <em>(선택)</em></span>
+          <input id="img-extra" type="text" placeholder="예: 회색 고등어 고양이, 창가">
+        </label>
+        <button class="ghost" id="btn-refine-prompt" style="margin-top:0">
+          이 카드 글에 맞는 장면 다시 잡기
+        </button>
+        <div id="scene-note" class="hint"></div>
+        <button class="primary" id="btn-gen-image" style="width:100%;margin-top:10px">
+          이미지 생성
+        </button>
+        <button class="ghost" id="btn-copy-prompt">프롬프트 복사</button>
+        <label class="drop" id="img-drop">
+          <input type="file" id="img-file" accept="image/*" hidden>
+          여기에 이미지를 끌어놓거나 클릭해 선택
+        </label>
+        <div class="row">
+          <label class="field small"><span>초점 X</span><input id="img-fx" type="range" min="0" max="1" step="0.01"></label>
+          <label class="field small"><span>초점 Y</span><input id="img-fy" type="range" min="0" max="1" step="0.01"></label>
+        </div>
+        <label class="field"><span>어둡기</span><input id="img-overlay" type="range" min="0" max="1" step="0.05"></label>
+      </div>
+
+      <div class="ipanel" id="panel-post">
+        <div id="strategy-box" class="summary small"></div>
+        <label class="field"><span>캡션</span><textarea id="p-caption" rows="8"></textarea></label>
+        <label class="field"><span>댓글 CTA</span><textarea id="p-cta" rows="2"></textarea></label>
+        <label class="field"><span>다음 편 예고</span><textarea id="p-teaser" rows="2"></textarea></label>
+        <label class="field"><span>해시태그</span><textarea id="p-tags" rows="3"></textarea></label>
+        <div class="row">
+          <label class="field small"><span>상태</span>
+            <select id="p-status">
+              <option>작성중</option><option>검토</option><option>내보냄</option><option>발행완료</option>
+            </select>
+          </label>
+        </div>
+        <label class="field"><span>메모</span><textarea id="p-memo" rows="2"></textarea></label>
+        <button class="ghost" id="btn-copy-caption">캡션 + 해시태그 복사</button>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ─────────────────────────── 보관함 -->
+<section class="view" id="view-library">
+  <div class="pane">
+    <h1>보관함</h1>
+    <p class="lead small">저장할 때마다 <code id="db-path"></code> 에 기록됩니다.</p>
+    <button class="ghost" id="btn-open-db">엑셀 DB 내려받기</button>
+    <table class="lib">
+      <thead><tr>
+        <th>작성일</th><th>주제</th><th>컨셉축</th><th>포맷</th><th>카드</th><th>상태</th><th></th>
+      </tr></thead>
+      <tbody id="lib-body"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ─────────────────────────── 설정 -->
+<section class="view" id="view-settings">
+  <div class="pane narrow">
+    <h1>설정</h1>
+    <p class="lead small">
+      <b>API 키는 사용하는 사람마다 각자 입력합니다.</b>
+      입력한 키는 <b>이 브라우저에만</b> 저장되고 서버에는 남지 않습니다.
+      다른 사람이 같은 주소로 접속하면 그 사람은 자기 키를 따로 넣어야 합니다.
+    </p>
+    <label class="field"><span>Anthropic API Key <em id="k-anthropic"></em></span>
+      <input id="s-anthropic" type="password" placeholder="sk-ant-… (변경할 때만 입력)">
+    </label>
+    <button class="ghost" id="btn-test-anthropic" style="margin-top:-6px">Claude 연결 테스트</button>
+    <div id="r-anthropic" class="hint"></div>
+
+    <label class="field" style="margin-top:18px"><span>OpenAI API Key <em id="k-openai"></em></span>
+      <input id="s-openai" type="password" placeholder="sk-… (변경할 때만 입력)">
+    </label>
+    <button class="ghost" id="btn-test-openai" style="margin-top:-6px">ChatGPT(이미지) 연결 테스트</button>
+    <div id="r-openai" class="hint"></div>
+    <p class="hint">테스트는 저장된 키로 실행합니다. 새 키를 넣었다면 <b>설정 저장</b>을 먼저 누르세요.</p>
+
+    <label class="checkline">
+      <input type="checkbox" id="s-require">
+      <span>각자 키 입력 필수 — <em>켜면 이 PC에 저장된 공용 키를 무시합니다. 여러 명이 쓰거나 프로그램을 나눠줄 때 켜세요.</em></span>
+    </label>
+
+    <label class="checkline">
+      <input type="checkbox" id="s-share">
+      <span>이 PC에도 저장 — <em>나만 쓰는 PC일 때만 켜세요. 이 PC를 쓰는 모든 사람이 내 키를 쓰게 됩니다.</em></span>
+    </label>
+    <button class="danger ghost" id="btn-forget-keys">이 브라우저에서 내 키 지우기</button>
+    <div class="row">
+      <label class="field"><span>Claude 모델</span><input id="s-model" type="text"></label>
+      <label class="field"><span>이미지 모델</span>
+        <input id="s-imodel" type="text" list="imodel-list" placeholder="gpt-image-2">
+        <datalist id="imodel-list"></datalist>
+      </label>
+    </div>
+    <button class="ghost" id="btn-list-models" style="margin-top:-6px">
+      이 키로 쓸 수 있는 이미지 모델 보기
+    </button>
+    <div id="imodel-status" class="hint"></div>
+    <div class="row" style="margin-top:14px">
+      <label class="field"><span>이미지 크기</span>
+        <select id="s-isize">
+          <option value="1024x1536">1024×1536 (세로 2:3 · 권장)</option>
+          <option value="1024x1024">1024×1024 (정사각)</option>
+          <option value="1536x1024">1536×1024 (가로)</option>
+          <option value="auto">auto (모델이 결정)</option>
+        </select>
+      </label>
+      <label class="field"><span>이미지 생성 방식</span>
+        <select id="s-imode"><option value="api">API 자동 생성</option><option value="manual">프롬프트만 (수동)</option></select>
+      </label>
+    </div>
+    <label class="field"><span>옵시디언 전략 노트 폴더 (한 줄에 하나)</span>
+      <textarea id="s-dirs" rows="5"></textarea>
+    </label>
+    <div id="dirs-status" class="hint"></div>
+    <button class="primary" id="btn-save-settings">설정 저장</button>
+  </div>
+</section>
+
+</main>
+
+<script type="module" src="/static/app.js"></script>
+</body>
+</html>

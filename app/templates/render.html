@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>render</title>
+<link rel="stylesheet" href="/static/card.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #fff; }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<script type="module">
+  import { renderCard } from '/static/card.js';
+
+  const params = new URLSearchParams(location.search);
+  const projectId = params.get('project');
+  const index = Number(params.get('index') || 1);
+
+  const res = await fetch(`/api/projects/${encodeURIComponent(projectId)}`);
+  const project = await res.json();
+  const card = project.cards[index - 1];
+
+  renderCard(document.getElementById('stage'), project, card);
+
+  // 배경 이미지와 폰트가 모두 준비된 뒤에만 신호를 준다
+  await document.fonts.ready;
+  const bg = document.querySelector('.card-bg');
+  const url = (bg.style.backgroundImage || '').match(/url\("(.+)"\)/);
+  if (url) {
+    await new Promise((resolve) => {
+      const img = new Image();
+      img.onload = img.onerror = resolve;
+      img.src = url[1];
+    });
+  }
+  document.body.dataset.ready = '1';
+</script>
+</body>
+</html>
