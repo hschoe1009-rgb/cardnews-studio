@@ -17,6 +17,11 @@ DEFAULT_SETTINGS = {
     "ANTHROPIC_API_KEY": "",
     "OPENAI_API_KEY": "",
     "CLAUDE_MODEL": "claude-opus-5",
+    # Anthropic 키가 없을 때 글쓰기를 대신할 OpenAI 모델
+    "OPENAI_TEXT_MODEL": "gpt-5.6-terra",
+    "OPENAI_TEXT_EFFORT": "medium",   # low | medium | high
+    # auto = 앤트로픽 키가 있으면 Claude, 없으면 OpenAI
+    "TEXT_PROVIDER": "auto",          # auto | anthropic | openai
     "IMAGE_MODEL": "gpt-image-2",
     "IMAGE_SIZE": "1024x1536",
     "IMAGE_MODE": "api",  # "api" | "manual"

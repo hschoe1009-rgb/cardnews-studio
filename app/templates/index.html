@@ -277,6 +277,26 @@
       <span>이 PC에도 저장 — <em>나만 쓰는 PC일 때만 켜세요. 이 PC를 쓰는 모든 사람이 내 키를 쓰게 됩니다.</em></span>
     </label>
     <button class="danger ghost" id="btn-forget-keys">이 브라우저에서 내 키 지우기</button>
+    <div class="field">
+      <span>글쓰기 담당 <em id="text-active"></em></span>
+      <select id="s-provider">
+        <option value="auto">자동 — Claude 키가 있으면 Claude, 없으면 OpenAI</option>
+        <option value="anthropic">Claude 만 사용</option>
+        <option value="openai">OpenAI 만 사용</option>
+      </select>
+    </div>
+    <div class="row">
+      <label class="field"><span>OpenAI 글쓰기 모델</span>
+        <input id="s-otext" type="text" placeholder="gpt-5.6-terra"></label>
+      <label class="field small" style="flex:0 0 130px"><span>추론 강도</span>
+        <select id="s-oeffort">
+          <option value="low">low</option>
+          <option value="medium">medium</option>
+          <option value="high">high</option>
+        </select>
+      </label>
+    </div>
+
     <div class="row">
       <label class="field"><span>Claude 모델</span><input id="s-model" type="text"></label>
       <label class="field"><span>이미지 모델</span>

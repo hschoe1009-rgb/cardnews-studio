@@ -1,4 +1,7 @@
-"""Claude 호출 — 키워드 추출 / 카드뉴스 구성.
+"""글쓰기 호출 — 키워드 추출 / 카드뉴스 구성.
+
+Anthropic 키가 있으면 Claude 를, 없으면 OpenAI 모델을 대신 씁니다.
+두 경로 모두 같은 JSON 스키마를 지키므로 뒤쪽 코드는 차이를 몰라도 됩니다.
 
 두 단계로 나눕니다.
   1) extract_keywords : 주제 → 키워드·앵글 후보 (사용자가 고르고 수정)
@@ -33,7 +36,96 @@ def _model() -> str:
     return config.load_settings().get("CLAUDE_MODEL", "claude-opus-5")
 
 
+# ---------------------------------------------------------------- 제공자 선택
+
+def provider() -> str:
+    """지금 글쓰기를 누가 하는지. auto 면 Claude 를 우선하고 없으면 OpenAI."""
+    s = config.load_settings()
+    pref = s.get("TEXT_PROVIDER", "auto")
+    has_claude = bool(s.get("ANTHROPIC_API_KEY", "").strip())
+    has_openai = bool(s.get("OPENAI_API_KEY", "").strip())
+
+    if pref == "anthropic":
+        return "anthropic" if has_claude else "none"
+    if pref == "openai":
+        return "openai" if has_openai else "none"
+    if has_claude:
+        return "anthropic"
+    if has_openai:
+        return "openai"
+    return "none"
+
+
+def active_text_model() -> tuple[str, str]:
+    """(제공자, 모델명). 화면에 무엇으로 쓰는지 보여주기 위해."""
+    s = config.load_settings()
+    p = provider()
+    if p == "anthropic":
+        return p, s.get("CLAUDE_MODEL", "")
+    if p == "openai":
+        return p, s.get("OPENAI_TEXT_MODEL", "")
+    return p, ""
+
+
+def _call_openai_json(system: str, user: str, schema: dict, effort: str) -> dict:
+    """Claude 가 없을 때 OpenAI 로 같은 일을 한다. 스키마 계약은 동일."""
+    settings = config.load_settings()
+    key = settings.get("OPENAI_API_KEY", "").strip()
+    if not key:
+        raise ClaudeError("OPENAI_API_KEY가 없습니다. 설정 화면에서 입력하세요.")
+    try:
+        from openai import OpenAI
+    except ImportError as exc:  # pragma: no cover
+        raise ClaudeError("openai 패키지가 없습니다. pip install openai") from exc
+    import openai as openai_pkg
+
+    model = settings.get("OPENAI_TEXT_MODEL", "gpt-5.6-terra")
+    # 이 파이프라인의 effort 값(high/medium/low)을 그대로 쓴다. 그 밖은 medium.
+    reasoning = effort if effort in ("low", "medium", "high") else "medium"
+
+    try:
+        res = OpenAI(api_key=key).responses.create(
+            model=model,
+            instructions=system,
+            input=user,
+            reasoning={"effort": reasoning},
+            text={"format": {"type": "json_schema", "name": "cardnews",
+                             "schema": schema, "strict": True}},
+        )
+    except openai_pkg.AuthenticationError as exc:
+        raise ClaudeError("OpenAI API 키가 올바르지 않습니다.") from exc
+    except openai_pkg.NotFoundError as exc:
+        raise ClaudeError(
+            f"'{model}' 모델을 쓸 수 없습니다. 설정에서 모델 이름을 확인하세요."
+        ) from exc
+    except openai_pkg.RateLimitError as exc:
+        raise ClaudeError("OpenAI 요청 한도에 걸렸습니다. 잠시 후 다시 시도하세요.") from exc
+    except openai_pkg.BadRequestError as exc:
+        raise ClaudeError(f"OpenAI 요청이 거부되었습니다: {exc.message}") from exc
+    except openai_pkg.APIStatusError as exc:
+        raise ClaudeError(f"OpenAI 오류 ({exc.status_code}): {exc.message}") from exc
+    except openai_pkg.APIConnectionError as exc:
+        raise ClaudeError("OpenAI 연결에 실패했습니다.") from exc
+
+    text = (res.output_text or "").strip()
+    if not text:
+        raise ClaudeError(f"{model} 이(가) 빈 응답을 반환했습니다.")
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError as exc:
+        raise ClaudeError(f"응답 JSON 파싱 실패: {text[:200]}") from exc
+
+
 def _call_json(system: str, user: str, schema: dict, effort: str = "high") -> dict:
+    who = provider()
+    if who == "none":
+        raise ClaudeError(
+            "API 키가 없습니다. 설정 화면에서 Anthropic 키를 넣거나, "
+            "OpenAI 키만 있어도 글쓰기가 가능합니다."
+        )
+    if who == "openai":
+        return _call_openai_json(system, user, schema, effort)
+
     client = _client()
     try:
         response = client.messages.create(

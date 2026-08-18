@@ -64,6 +64,12 @@ def get_settings() -> dict:
     sources = config.key_sources()
     return {
         "claude_model": settings.get("CLAUDE_MODEL", ""),
+        # 글쓰기를 지금 누가 하는지 (anthropic / openai / none)
+        "text_provider_pref": settings.get("TEXT_PROVIDER", "auto"),
+        "text_provider": claude_client.provider(),
+        "text_model": claude_client.active_text_model()[1],
+        "openai_text_model": settings.get("OPENAI_TEXT_MODEL", ""),
+        "openai_text_effort": settings.get("OPENAI_TEXT_EFFORT", "medium"),
         "image_model": settings.get("IMAGE_MODEL", ""),
         "image_size": settings.get("IMAGE_SIZE", "1024x1536"),
         "image_mode": settings.get("IMAGE_MODE", "api"),
@@ -84,7 +90,8 @@ def get_settings() -> dict:
 @app.post("/api/settings")
 def post_settings(payload: dict = Body(...)) -> dict:
     updates: dict[str, str] = {}
-    for key in ("CLAUDE_MODEL", "IMAGE_MODEL", "IMAGE_SIZE", "IMAGE_MODE", "REQUIRE_USER_KEY"):
+    for key in ("CLAUDE_MODEL", "IMAGE_MODEL", "IMAGE_SIZE", "IMAGE_MODE", "REQUIRE_USER_KEY",
+                "TEXT_PROVIDER", "OPENAI_TEXT_MODEL", "OPENAI_TEXT_EFFORT"):
         value = payload.get(key)
         if value:
             updates[key] = value

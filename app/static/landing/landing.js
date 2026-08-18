@@ -119,7 +119,10 @@
   }, { passive: true });
 
   var links = Array.prototype.slice.call(nav.querySelectorAll('a[href^="#"]'));
+  // 라우트 링크(#/features)는 CSS 선택자가 아니다. 섹션 감지에서 빼지 않으면
+  // querySelector 가 예외를 던져 이 파일 전체가 멈춘다.
   var targets = links
+    .filter(function (a) { return !/^#\//.test(a.getAttribute('href')); })
     .map(function (a) { return document.querySelector(a.getAttribute('href')); })
     .filter(Boolean);
 
@@ -221,6 +224,92 @@
     if (e.key === 'Escape') closeLb();
     if (e.key === 'Tab') { e.preventDefault(); lbClose.focus(); }
   });
+
+
+  /* ───────── 슬라이드 라우터
+     기능·사용 흐름·FAQ 는 옆으로 밀려 들어오는 별도 화면으로 연다.
+     주소(#/features)에 남기므로 브라우저 뒤로가기와 새로고침이 그대로 동작한다.
+     JS 가 없으면 CSS 기본값 때문에 전부 보이는 한 장짜리 페이지가 된다. */
+  var deck = document.getElementById('deck');
+  if (deck) {
+    document.documentElement.classList.add('has-deck');
+
+    var panels = {};
+    Array.prototype.slice.call(deck.querySelectorAll('.panel')).forEach(function (el) {
+      panels[el.dataset.panel] = el;
+    });
+
+    function routeOf(hash) {
+      var m = /^#\/([\w-]+)$/.exec(hash || '');
+      return m && panels[m[1]] ? m[1] : 'home';
+    }
+
+    var current = 'home';
+
+    function show(name, opts) {
+      opts = opts || {};
+      if (!panels[name] || name === current) return;
+      var from = panels[current], to = panels[name];
+      var back = name === 'home';
+
+      from.classList.remove('is-active', 'slide-in-right', 'slide-in-left');
+      from.hidden = true;
+      to.hidden = false;
+      to.classList.add('is-active');
+      if (!reduced) {
+        to.classList.remove('slide-in-right', 'slide-in-left');
+        void to.offsetWidth;                       // 애니메이션 재시작
+        to.classList.add(back ? 'slide-in-left' : 'slide-in-right');
+      }
+      current = name;
+
+      window.scrollTo({ top: 0, behavior: 'auto' });
+
+      // 화면이 바뀌었으니 읽는 자리를 새 화면 제목으로 옮긴다
+      var head = to.querySelector('.panel-title, h1');
+      if (head && !opts.silent) {
+        head.setAttribute('tabindex', '-1');
+        head.focus({ preventScroll: true });
+      }
+      links.forEach(function (a) {
+        var r = a.dataset.route;
+        a.setAttribute('aria-current', r && r === name ? 'true' : 'false');
+      });
+    }
+
+    function go(name, push) {
+      show(name);
+      var hash = name === 'home' ? ' ' : '#/' + name;
+      if (push) history.pushState({ panel: name }, '', name === 'home' ? location.pathname : hash);
+    }
+
+    // 내비·본문의 라우트 링크
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest('a[data-route]');
+      if (a) { e.preventDefault(); go(a.dataset.route, true); return; }
+
+      var back = e.target.closest('[data-back]');
+      if (back) { e.preventDefault(); go('home', true); return; }
+
+      // 상세 화면에서 홈 앵커(#setup 등)를 누르면 홈으로 돌아간 뒤 이동
+      var anchor = e.target.closest('a[href^="#"]:not([data-route])');
+      if (anchor && current !== 'home') {
+        var id = anchor.getAttribute('href').slice(1);
+        if (id && !id.startsWith('/') && document.getElementById(id)) {
+          e.preventDefault();
+          go('home', true);
+          requestAnimationFrame(function () {
+            document.getElementById(id).scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' });
+          });
+        }
+      }
+    });
+
+    addEventListener('popstate', function () { show(routeOf(location.hash)); });
+
+    // 새로고침·직접 접속 대응
+    if (routeOf(location.hash) !== 'home') show(routeOf(location.hash), { silent: true });
+  }
 
   /* ───────── 등장 효과 (한 번만) */
   var revealables = Array.prototype.slice.call(document.querySelectorAll('.reveal'));

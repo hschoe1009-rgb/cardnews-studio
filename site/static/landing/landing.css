@@ -490,3 +490,66 @@ html.has-reveal .reveal.in {
   }
   .reveal { opacity: 1; transform: none; }
 }
+
+/* ───────────── 슬라이드 상세 페이지
+   기능·사용 흐름·FAQ 는 아래로 스크롤하는 대신 옆으로 밀려 들어온다.
+   JS 가 없거나 실패하면 .panel 이 전부 보이는 평범한 한 장짜리 페이지가 된다. */
+.deck { position: relative; }
+.panel { display: block; }
+
+/* JS 가 라우터를 켰을 때만 한 장씩 보여준다 */
+html.has-deck .panel { display: none; }
+html.has-deck .panel.is-active { display: block; }
+
+html.has-deck .panel.slide-in-right { animation: slideInRight .34s var(--ease) both; }
+html.has-deck .panel.slide-in-left  { animation: slideInLeft  .34s var(--ease) both; }
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(6%); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-6%); }
+  to   { opacity: 1; transform: none; }
+}
+
+.panel-top {
+  background: var(--navy); color: var(--white);
+  padding: 72px 0 56px;
+}
+.panel-top .eyebrow { color: var(--gold); margin-bottom: 14px; }
+.panel-title { font-size: clamp(30px, 3.6vw, 48px); font-weight: 800; line-height: 1.2; }
+.panel-top .lead { color: #C6CCD8; }
+
+.backlink {
+  display: inline-flex; align-items: center; gap: 8px;
+  min-height: 44px; padding: 10px 16px; margin-bottom: 22px;
+  background: rgba(255, 255, 255, .08);
+  border: 1px solid rgba(255, 255, 255, .2);
+  border-radius: var(--radius-btn);
+  color: var(--white); font: inherit; font-size: 15px; cursor: pointer;
+  transition: background .15s, border-color .15s;
+}
+.backlink:hover { background: rgba(255, 255, 255, .16); border-color: rgba(255, 255, 255, .4); }
+.backlink span { font-size: 17px; line-height: 1; }
+
+/* 패널 안의 본문 섹션은 위쪽 여백을 줄인다 (패널 헤더가 이미 있으므로) */
+.panel > section { padding-top: 72px; }
+
+.panel-foot {
+  background: var(--cream); border-top: 1px solid var(--border);
+  padding: 56px 0 88px;
+}
+.panel-foot .wrap { display: flex; flex-wrap: wrap; gap: 12px; }
+
+@media (max-width: 767px) {
+  .panel-top { padding: 56px 0 44px; }
+  .panel > section { padding-top: 56px; }
+  .panel-foot { padding: 44px 0 64px; }
+  .panel-foot .btn { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.has-deck .panel.slide-in-right,
+  html.has-deck .panel.slide-in-left { animation: none; }
+}

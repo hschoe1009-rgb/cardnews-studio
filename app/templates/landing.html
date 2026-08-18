@@ -37,10 +37,10 @@
 
     <nav class="site-nav" id="siteNav" aria-label="주요 메뉴">
       <ul>
-        <li><a href="#features">기능</a></li>
-        <li><a href="#flow">사용 흐름</a></li>
+        <li><a href="#/features" data-route="features">기능</a></li>
+        <li><a href="#/flow" data-route="flow">사용 흐름</a></li>
         <li><a href="#results">결과물</a></li>
-        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#/faq" data-route="faq">FAQ</a></li>
       </ul>
     </nav>
 
@@ -49,6 +49,10 @@
 </header>
 
 <main id="main">
+
+<div class="deck" id="deck">
+
+<div class="panel is-active" id="panel-home" data-panel="home">
 
 <!-- ─────────────── 2. 히어로 -->
 <section class="hero on-navy" aria-labelledby="heroTitle">
@@ -128,67 +132,10 @@
 </section>
 
 <!-- ─────────────── 5. 사용 흐름 -->
-<section class="flow" id="flow" aria-labelledby="flowTitle">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <p class="eyebrow">HOW IT WORKS</p>
-      <h2 id="flowTitle">한 줄의 주제가 결과물이 되기까지</h2>
-    </div>
-    <div class="steps">
-      <article class="step reveal"><span class="n">1</span>
-        <h3>주제 또는 원문 넣기</h3>
-        <p>주제 한 줄로 시작하거나 <code>.md</code>·<code>.txt</code>와 붙여넣은 글을 요약해 주제 후보를 고릅니다.</p></article>
-      <article class="step reveal"><span class="n">2</span>
-        <h3>키워드와 전략 고르기</h3>
-        <p>핵심·검색 키워드와 서로 다른 앵글 3개를 확인하고 하나를 선택합니다.</p></article>
-      <article class="step reveal"><span class="n">3</span>
-        <h3>카드 구성 만들기</h3>
-        <p>3~10장의 역할, 문구, 캡션, 해시태그와 이미지 프롬프트 초안을 만듭니다.</p></article>
-      <article class="step reveal"><span class="n">4</span>
-        <h3>캔버스에서 다듬기</h3>
-        <p>텍스트를 끌어 옮기고 바로 수정하며, 배경 이미지와 초점·어둡기를 조정합니다.</p></article>
-      <article class="step reveal"><span class="n">5</span>
-        <h3>내보내고 DB에 쌓기</h3>
-        <p>1080×1350 PNG와 ZIP을 받고, 주제·전략·카드 문구·캡션·상태를 엑셀 DB에 남깁니다.</p></article>
-    </div>
-  </div>
-</section>
+
 
 <!-- ─────────────── 6. 실제 기능 -->
-<section class="features" id="features" aria-labelledby="featuresTitle">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <p class="eyebrow">FEATURES</p>
-      <h2 id="featuresTitle">생성에서 끝나지 않는 제작 기능</h2>
-      <p class="lead">아래 기능은 모두 현재 프로그램에서 실제로 동작하는 것만 적었습니다.</p>
-    </div>
 
-    <div class="fgrid" id="featureGrid">
-      <article class="fcard reveal"><h3>주제 한 줄로 시작</h3><p>짧은 주제를 넣어 키워드와 전략 앵글을 만듭니다.</p></article>
-      <article class="fcard reveal"><h3>원문에서 주제 추출</h3><p><code>.md</code>·<code>.txt</code> 또는 붙여넣은 글을 요약하고 주제 후보 3개를 제안합니다.</p></article>
-      <article class="fcard reveal"><h3>전략 앵글 3안</h3><p>컨셉 축이 다른 앵글을 비교하고 하나를 선택합니다.</p></article>
-      <article class="fcard reveal"><h3>3~10장 카드 구성</h3><p>선택한 전략으로 카드 역할·문구·캡션·해시태그 초안을 만듭니다.</p></article>
-      <article class="fcard reveal"><h3>드래그·인라인 편집</h3><p>4:5 캔버스에서 텍스트 레이어를 옮기고 더블클릭해 바로 고칩니다.</p></article>
-      <article class="fcard reveal"><h3>PNG·ZIP 출력과 DB 기록</h3><p>화면과 같은 1080×1350 PNG를 내보내고, 제작 데이터를 엑셀 DB에 남깁니다.</p></article>
-
-      <article class="fcard" hidden><h3>레이어 세부 조정</h3><p>위치, 폭, 크기, 굵기, 행간, 정렬, 색을 조정합니다.</p></article>
-      <article class="fcard" hidden><h3>카드 문구 재작성</h3><p>카드 한 장을 추가 지시와 함께 다시 씁니다.</p></article>
-      <article class="fcard" hidden><h3>장면 다시 설계</h3><p>현재 카드 문구에 맞춰 이미지 장면 프롬프트를 다시 만듭니다.</p></article>
-      <article class="fcard" hidden><h3>배경 이미지 선택 방식</h3><p>OpenAI API로 자동 생성하거나, 프롬프트를 복사한 뒤 만든 이미지를 업로드합니다.</p></article>
-      <article class="fcard" hidden><h3>이미지 초점·어둡기</h3><p>업로드하거나 생성한 이미지의 초점 X·Y와 오버레이 강도를 조절합니다.</p></article>
-      <article class="fcard" hidden><h3>발행 문구 관리</h3><p>캡션, 댓글 CTA, 다음 편 예고, 해시태그, 상태, 메모를 편집합니다.</p></article>
-      <article class="fcard" hidden><h3>프로젝트 보관함</h3><p>지난 프로젝트를 다시 열거나 삭제하고 엑셀 DB를 내려받습니다.</p></article>
-      <article class="fcard" hidden><h3>시각 테마 4종</h3><p>딥네이비, 크림, 세이지, 와인 테마를 제공합니다.</p></article>
-      <article class="fcard" hidden><h3>자가진단과 안전 기준</h3><p>첫 장 후킹·가독성·계정 적합성·저장 이유를 점검하고, 건강·행동 주제에는 상담 고지를 적용합니다.</p></article>
-    </div>
-
-    <div class="more-row">
-      <button class="btn btn-ghost" id="moreFeatures" aria-expanded="false" aria-controls="featureGrid" data-ev="open_feature_tab">
-        전체 기능 보기
-      </button>
-    </div>
-  </div>
-</section>
 
 <!-- ─────────────── 7. 편집 화면 집중 소개 -->
 <section class="editor-sec on-navy" aria-labelledby="editorTitle">
@@ -340,15 +287,7 @@
 </section>
 
 <!-- ─────────────── 11. FAQ -->
-<section class="faq" id="faq" aria-labelledby="faqTitle">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <p class="eyebrow">FAQ</p>
-      <h2 id="faqTitle">자주 묻는 질문</h2>
-    </div>
-    <div class="faq-list" id="faqList"></div>
-  </div>
-</section>
+
 
 <!-- ─────────────── 12. 최종 CTA -->
 <section class="final on-navy" aria-labelledby="finalTitle">
@@ -368,6 +307,121 @@
   </div>
 </section>
 
+</div>
+
+<div class="panel" id="panel-features" data-panel="features" hidden>
+  <div class="panel-top">
+    <div class="wrap">
+      <button class="backlink" data-back type="button">
+        <span aria-hidden="true">←</span> 처음으로
+      </button>
+      <p class="eyebrow">FEATURES</p>
+      <h2 class="panel-title">생성에서 끝나지 않는 제작 기능</h2>
+      <p class="lead">현재 프로그램에서 실제로 동작하는 기능만 적었습니다.</p>
+    </div>
+  </div>
+  <section class="features" aria-labelledby="featuresTitle">
+  <div class="wrap">
+    <div class="fgrid" id="featureGrid">
+      <article class="fcard reveal"><h3>주제 한 줄로 시작</h3><p>짧은 주제를 넣어 키워드와 전략 앵글을 만듭니다.</p></article>
+      <article class="fcard reveal"><h3>원문에서 주제 추출</h3><p><code>.md</code>·<code>.txt</code> 또는 붙여넣은 글을 요약하고 주제 후보 3개를 제안합니다.</p></article>
+      <article class="fcard reveal"><h3>전략 앵글 3안</h3><p>컨셉 축이 다른 앵글을 비교하고 하나를 선택합니다.</p></article>
+      <article class="fcard reveal"><h3>3~10장 카드 구성</h3><p>선택한 전략으로 카드 역할·문구·캡션·해시태그 초안을 만듭니다.</p></article>
+      <article class="fcard reveal"><h3>드래그·인라인 편집</h3><p>4:5 캔버스에서 텍스트 레이어를 옮기고 더블클릭해 바로 고칩니다.</p></article>
+      <article class="fcard reveal"><h3>PNG·ZIP 출력과 DB 기록</h3><p>화면과 같은 1080×1350 PNG를 내보내고, 제작 데이터를 엑셀 DB에 남깁니다.</p></article>
+
+      <article class="fcard" hidden><h3>레이어 세부 조정</h3><p>위치, 폭, 크기, 굵기, 행간, 정렬, 색을 조정합니다.</p></article>
+      <article class="fcard" hidden><h3>카드 문구 재작성</h3><p>카드 한 장을 추가 지시와 함께 다시 씁니다.</p></article>
+      <article class="fcard" hidden><h3>장면 다시 설계</h3><p>현재 카드 문구에 맞춰 이미지 장면 프롬프트를 다시 만듭니다.</p></article>
+      <article class="fcard" hidden><h3>배경 이미지 선택 방식</h3><p>OpenAI API로 자동 생성하거나, 프롬프트를 복사한 뒤 만든 이미지를 업로드합니다.</p></article>
+      <article class="fcard" hidden><h3>이미지 초점·어둡기</h3><p>업로드하거나 생성한 이미지의 초점 X·Y와 오버레이 강도를 조절합니다.</p></article>
+      <article class="fcard" hidden><h3>발행 문구 관리</h3><p>캡션, 댓글 CTA, 다음 편 예고, 해시태그, 상태, 메모를 편집합니다.</p></article>
+      <article class="fcard" hidden><h3>프로젝트 보관함</h3><p>지난 프로젝트를 다시 열거나 삭제하고 엑셀 DB를 내려받습니다.</p></article>
+      <article class="fcard" hidden><h3>시각 테마 4종</h3><p>딥네이비, 크림, 세이지, 와인 테마를 제공합니다.</p></article>
+      <article class="fcard" hidden><h3>자가진단과 안전 기준</h3><p>첫 장 후킹·가독성·계정 적합성·저장 이유를 점검하고, 건강·행동 주제에는 상담 고지를 적용합니다.</p></article>
+    </div>
+
+    <div class="more-row">
+      <button class="btn btn-ghost" id="moreFeatures" aria-expanded="false" aria-controls="featureGrid" data-ev="open_feature_tab">
+        전체 기능 보기
+      </button>
+    </div>
+  </div>
+</section>
+  <div class="panel-foot">
+    <div class="wrap">
+      <a class="btn btn-primary" href="#setup" data-ev="click_primary_cta">카드뉴스 만들기</a>
+      <button class="btn btn-ghost" data-back type="button">처음으로 돌아가기</button>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="panel-flow" data-panel="flow" hidden>
+  <div class="panel-top">
+    <div class="wrap">
+      <button class="backlink" data-back type="button">
+        <span aria-hidden="true">←</span> 처음으로
+      </button>
+      <p class="eyebrow">HOW IT WORKS</p>
+      <h2 class="panel-title">한 줄의 주제가 결과물이 되기까지</h2>
+      <p class="lead">입력에서 저장까지 다섯 단계입니다.</p>
+    </div>
+  </div>
+  <section class="flow" aria-labelledby="flowTitle">
+  <div class="wrap">
+    <div class="steps">
+      <article class="step reveal"><span class="n">1</span>
+        <h3>주제 또는 원문 넣기</h3>
+        <p>주제 한 줄로 시작하거나 <code>.md</code>·<code>.txt</code>와 붙여넣은 글을 요약해 주제 후보를 고릅니다.</p></article>
+      <article class="step reveal"><span class="n">2</span>
+        <h3>키워드와 전략 고르기</h3>
+        <p>핵심·검색 키워드와 서로 다른 앵글 3개를 확인하고 하나를 선택합니다.</p></article>
+      <article class="step reveal"><span class="n">3</span>
+        <h3>카드 구성 만들기</h3>
+        <p>3~10장의 역할, 문구, 캡션, 해시태그와 이미지 프롬프트 초안을 만듭니다.</p></article>
+      <article class="step reveal"><span class="n">4</span>
+        <h3>캔버스에서 다듬기</h3>
+        <p>텍스트를 끌어 옮기고 바로 수정하며, 배경 이미지와 초점·어둡기를 조정합니다.</p></article>
+      <article class="step reveal"><span class="n">5</span>
+        <h3>내보내고 DB에 쌓기</h3>
+        <p>1080×1350 PNG와 ZIP을 받고, 주제·전략·카드 문구·캡션·상태를 엑셀 DB에 남깁니다.</p></article>
+    </div>
+  </div>
+</section>
+  <div class="panel-foot">
+    <div class="wrap">
+      <a class="btn btn-primary" href="#setup" data-ev="click_primary_cta">카드뉴스 만들기</a>
+      <button class="btn btn-ghost" data-back type="button">처음으로 돌아가기</button>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="panel-faq" data-panel="faq" hidden>
+  <div class="panel-top">
+    <div class="wrap">
+      <button class="backlink" data-back type="button">
+        <span aria-hidden="true">←</span> 처음으로
+      </button>
+      <p class="eyebrow">FAQ</p>
+      <h2 class="panel-title">자주 묻는 질문</h2>
+      <p class="lead">설치·키·결과물·한계까지 미리 확인하세요.</p>
+    </div>
+  </div>
+  <section class="faq" aria-labelledby="faqTitle">
+  <div class="wrap">
+    <div class="faq-list" id="faqList"></div>
+  </div>
+</section>
+  <div class="panel-foot">
+    <div class="wrap">
+      <a class="btn btn-primary" href="#setup" data-ev="click_primary_cta">카드뉴스 만들기</a>
+      <button class="btn btn-ghost" data-back type="button">처음으로 돌아가기</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
 </main>
 
 <!-- ─────────────── 13. 푸터 -->
@@ -378,10 +432,10 @@
     </div>
     <nav aria-label="푸터 메뉴">
       <ul>
-        <li><a href="#features">기능</a></li>
-        <li><a href="#flow">사용 흐름</a></li>
+        <li><a href="#/features" data-route="features">기능</a></li>
+        <li><a href="#/flow" data-route="flow">사용 흐름</a></li>
         <li><a href="#results">결과물</a></li>
-        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#/faq" data-route="faq">FAQ</a></li>
       </ul>
     </nav>
     <div class="copy">주제 입력부터 카드뉴스 생성·DB 저장까지</div>

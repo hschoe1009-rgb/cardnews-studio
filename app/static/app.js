@@ -611,6 +611,12 @@ async function loadSettings() {
   const s = await api('/api/settings');
   state.settings = s;
   $('s-model').value = s.claude_model;
+  $('s-provider').value = s.text_provider_pref;
+  $('s-otext').value = s.openai_text_model;
+  $('s-oeffort').value = s.openai_text_effort;
+  $('text-active').textContent = s.text_provider === 'none'
+    ? '· 키가 없어 글쓰기를 할 수 없습니다'
+    : `· 지금은 ${s.text_provider === 'anthropic' ? 'Claude' : 'OpenAI'} ${s.text_model} 사용 중`;
   $('s-imodel').value = s.image_model;
   $('s-isize').value = s.image_size;
   $('s-imode').value = s.image_mode;
@@ -674,6 +680,9 @@ $('btn-save-settings').addEventListener('click', async () => {
     method: 'POST',
     body: JSON.stringify({
       CLAUDE_MODEL: $('s-model').value.trim(),
+      TEXT_PROVIDER: $('s-provider').value,
+      OPENAI_TEXT_MODEL: $('s-otext').value.trim(),
+      OPENAI_TEXT_EFFORT: $('s-oeffort').value,
       IMAGE_MODEL: $('s-imodel').value.trim(),
       IMAGE_SIZE: $('s-isize').value,
       IMAGE_MODE: $('s-imode').value,
