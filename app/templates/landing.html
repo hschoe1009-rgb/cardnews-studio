@@ -41,11 +41,9 @@
         <li><a href="#/flow" data-route="flow">사용 흐름</a></li>
         <li><a href="#results">결과물</a></li>
         <li><a href="#/faq" data-route="faq">FAQ</a></li>
-        <li class="only-mobile"><a href="#/trial" data-route="trial">무료 체험</a></li>
       </ul>
     </nav>
 
-    <a class="btn btn-ghost header-cta" href="#/trial" data-route="trial" data-ev="click_trial">무료 체험</a>
     <a class="btn btn-primary header-cta" href="/app/" data-ev="click_primary_cta">카드뉴스 만들기</a>
   </div>
 </header>
@@ -65,7 +63,6 @@
       <p class="lead">주제에 맞는 구성·문구·이미지 초안을 만들고, 1080×1350 캔버스에서 직접 편집합니다. 완성 카드뉴스는 PNG·ZIP으로, 제작 데이터는 엑셀 DB로 저장합니다.</p>
       <div class="cta-row">
         <a class="btn btn-primary" href="/app/" data-ev="click_primary_cta">카드뉴스 만들기</a>
-        <a class="btn btn-trial" href="#/trial" data-route="trial" data-ev="click_trial">무료체험하기</a>
         <a class="btn btn-ghost" href="#results" data-ev="click_preview">완성본 미리보기</a>
       </div>
       <p class="cta-note">
@@ -312,118 +309,6 @@
 
 </div>
 
-<div class="panel" id="panel-trial" data-panel="trial" hidden>
-  <div class="panel-top">
-    <div class="wrap">
-      <button class="backlink" data-back type="button"><span aria-hidden="true">←</span> 처음으로</button>
-      <p class="eyebrow">FREE TRIAL</p>
-      <h2 class="panel-title">가입 없이, 브라우저에서 바로</h2>
-      <p class="lead">주제 한 줄로 전략과 카드 문구를 만들고 배경까지 붙여 봅니다. 계정도 서버도 없습니다.</p>
-    </div>
-  </div>
-
-  <section class="trial">
-    <div class="wrap">
-
-      <div class="trial-notice">
-        <b>내 API 키로 동작합니다.</b>
-        키는 <b>이 브라우저에만</b> 저장되고 어디로도 전송되지 않습니다.
-        생성 요청은 브라우저에서 각 회사 서버로 직접 갑니다.
-        <span>사용료는 본인 계정에 청구됩니다.</span>
-      </div>
-
-      <!-- 1단계 : 키 -->
-      <div class="tstep" id="tstep-key">
-        <h3><span class="tnum">1</span> API 키 넣기</h3>
-        <div class="row">
-          <label class="field">
-            <span>Anthropic 키 <em>(문구 생성에 필요)</em></span>
-            <input id="t-anthropic" type="password" placeholder="sk-ant-…" autocomplete="off">
-          </label>
-          <label class="field">
-            <span>OpenAI 키 <em>(배경 이미지에 필요)</em></span>
-            <input id="t-openai" type="password" placeholder="sk-…" autocomplete="off">
-          </label>
-        </div>
-        <div class="trow">
-          <button class="btn btn-primary" id="t-savekeys" type="button">키 저장</button>
-          <button class="btn btn-ghost" id="t-clearkeys" type="button">키 지우기</button>
-          <span class="tstatus" id="t-keystate"></span>
-        </div>
-        <p class="thint">
-          키는 <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">Anthropic 콘솔</a> ·
-          <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener">OpenAI 대시보드</a> 에서 받습니다.
-        </p>
-      </div>
-
-      <!-- 2단계 : 주제 -->
-      <div class="tstep" id="tstep-topic">
-        <h3><span class="tnum">2</span> 주제 넣고 전략 뽑기</h3>
-        <label class="field">
-          <span>어떤 카드뉴스를 만들까요</span>
-          <input id="t-topic" type="text" placeholder="예: 집사 없을 때 고양이가 우는 이유">
-        </label>
-        <div class="trow">
-          <button class="btn btn-primary" id="t-strategy" type="button">전략 3안 뽑기</button>
-          <span class="tstatus" id="t-strategy-state"></span>
-        </div>
-        <div id="t-angles" class="tangles"></div>
-      </div>
-
-      <!-- 3단계 : 카드 -->
-      <div class="tstep" id="tstep-cards" hidden>
-        <h3><span class="tnum">3</span> 카드 만들기</h3>
-        <div class="trow">
-          <label class="field small" style="flex:0 0 130px">
-            <span>카드 수</span>
-            <select id="t-count"><option>3</option><option selected>5</option><option>7</option></select>
-          </label>
-          <button class="btn btn-primary" id="t-compose" type="button">카드 구성하기</button>
-          <span class="tstatus" id="t-compose-state"></span>
-        </div>
-      </div>
-
-      <!-- 4단계 : 결과 -->
-      <div class="tstep" id="tstep-result" hidden>
-        <h3><span class="tnum">4</span> 결과 보기</h3>
-        <div class="tresult">
-          <div class="tstage-wrap">
-            <div id="t-stage" class="tstage"></div>
-            <div class="trow tnav">
-              <button class="btn btn-ghost" id="t-prev" type="button">◀</button>
-              <span id="t-label">1 / 5</span>
-              <button class="btn btn-ghost" id="t-next" type="button">▶</button>
-            </div>
-          </div>
-          <div class="tside">
-            <div class="trow">
-              <button class="btn btn-primary" id="t-image" type="button">이 카드 배경 만들기</button>
-              <button class="btn btn-ghost" id="t-image-all" type="button">전체 배경 만들기</button>
-            </div>
-            <span class="tstatus" id="t-image-state"></span>
-            <div class="trow" style="margin-top:14px">
-              <button class="btn btn-ghost" id="t-png" type="button">이 카드 PNG 저장</button>
-            </div>
-            <div id="t-caption" class="tcaption"></div>
-          </div>
-        </div>
-      </div>
-
-      <p class="trial-foot">
-        여기까지가 맛보기입니다. 레이어 편집·전체 PNG·ZIP·엑셀 DB 기록은
-        <a href="/app/">전체 기능 웹앱</a>에 있습니다. 설치 없이 바로 열립니다.
-      </p>
-    </div>
-  </section>
-
-  <div class="panel-foot">
-    <div class="wrap">
-      <a class="btn btn-primary" href="/app/" data-ev="click_primary_cta">전체 기능으로 열기</a>
-      <button class="btn btn-ghost" data-back type="button">처음으로 돌아가기</button>
-    </div>
-  </div>
-</div>
-
 <div class="panel" id="panel-features" data-panel="features" hidden>
   <div class="panel-top">
     <div class="wrap">
@@ -564,6 +449,5 @@
 </div>
 
 <script src="/static/landing/landing.js"></script>
-<script src="/static/landing/trial.js"></script>
 </body>
 </html>
