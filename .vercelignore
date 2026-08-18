@@ -1,13 +1,16 @@
-# Vercel 에는 정적 랜딩(site/)만 올린다.
-# 앱 본체는 로컬 전용이라 배포 번들에 넣을 이유가 없고,
+# Vercel 에는 site/ 만 올린다 (랜딩 + site/app/ 웹앱).
+# FastAPI 소스는 배포 번들에 넣을 이유가 없고,
 # 루트의 requirements.txt 때문에 파이썬 빌드가 잡히는 것도 막는다.
-app/
-knowledge/
-tools/
-data/
-output/
-.venv/
-requirements.txt
-run.bat
-README.md
+#
+# 경로 앞의 / 는 반드시 필요하다. 없으면 gitignore 규칙처럼
+# '이름이 같은 모든 폴더'가 걸려서 site/app/ 까지 빠진다.
+/app/
+/knowledge/
+/tools/
+/data/
+/output/
+/.venv/
+/requirements.txt
+/run.bat
+/README.md
 .env*
