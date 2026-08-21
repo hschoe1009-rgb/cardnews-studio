@@ -35,8 +35,8 @@ BASE = f"http://127.0.0.1:{PORT}"
 
 # 화면에 보일 가짜 키. 진짜처럼 생겼지만 어디에도 통하지 않는다.
 # HTTP 헤더는 ISO-8859-1 만 실을 수 있어 한글을 넣으면 fetch 가 먼저 터진다.
-FAKE_ANTH = "sk-ant-api03-EXAMPLE-0000-this-is-a-sample-key-for-the-guide-only"
-FAKE_OAI = "sk-proj-EXAMPLE0000-this-is-a-sample-key-for-the-guide-only"
+FAKE_ANTH = "sk-ant-api03-EXAMPLE-sample-key-for-the-guide-not-a-real-one-4821"
+FAKE_OAI = "sk-proj-EXAMPLE-sample-key-for-the-guide-not-a-real-one-7305"
 
 TOPIC = "고양이가 창가에만 앉아 있는 이유"
 

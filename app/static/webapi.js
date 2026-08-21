@@ -55,9 +55,14 @@ var APP_ROOT = (function () {
     var s2 = String(v || '').trim();
     if (!s2) return s2;
     for (var i = 0; i < s2.length; i++) {
-      if (s2.charCodeAt(i) > 255) {
-        throw err(name + ' 키에 한글 같은 문자가 섞여 있습니다. '
-                + '앞뒤 설명은 빼고 키만 붙여넣어 주세요.');
+      var c = s2.charCodeAt(i);
+      if (c > 255) {
+        throw err(name + ' 키에 한글 등 영문·숫자가 아닌 문자가 섞여 있습니다. '
+                + '앞뒤 설명은 빼고 키만 다시 붙여넣어 주세요.');
+      }
+      if (c < 33) {
+        throw err(name + ' 키에 공백이나 줄바꿈이 섞여 있습니다. '
+                + '설정 탭에서 키를 다시 붙여넣어 주세요.');
       }
     }
     return s2;

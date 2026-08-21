@@ -26,6 +26,24 @@ function myKeys() {
   try { return JSON.parse(localStorage.getItem(KEY_STORE) || '{}'); }
   catch { return {}; }
 }
+/* 키를 복사하다 딸려오는 것들을 걸러낸다.
+   웹페이지에서 긁으면 앞뒤 따옴표, 눈에 안 보이는 공백(U+200B 같은),
+   줄바꿈이 붙어 오는 일이 잦다. 그대로 보내면 401 이 나는데
+   화면에는 '키가 틀렸다'고만 보여서 원인을 못 찾는다. */
+function cleanKey(raw) {
+  const before = String(raw || '');
+  let v = before.trim();
+  // 감싼 따옴표 — 곧은 것과 스마트 따옴표 모두
+  const quotes = ['"', "'", '`', String.fromCharCode(8216, 8217, 8220, 8221)].join('');
+  while (v.length > 1 && quotes.includes(v[0]) && quotes.includes(v[v.length - 1])) {
+    v = v.slice(1, -1).trim();
+  }
+  // 공백류 — 공백·탭·줄바꿈·NBSP·폭 없는 문자(U+200B~200D)·BOM
+  const drop = [32, 9, 10, 13, 160, 8203, 8204, 8205, 65279];
+  v = v.split('').filter((c) => drop.indexOf(c.charCodeAt(0)) < 0).join('');
+  return { key: v, changed: v !== before };
+}
+
 function setMyKey(name, value) {
   const keys = myKeys();
   if (value) keys[name] = value; else delete keys[name];
@@ -649,6 +667,17 @@ async function loadSettings() {
 
 async function testKey(provider, boxId, label) {
   const box = $(boxId);
+  /* 칸에 방금 넣은 키가 있으면 그것으로 테스트한다.
+     버튼이 칸 바로 아래에 있어서, 붙여넣고 곧장 누르는 것이 자연스럽다.
+     예전에는 저장된 키로만 테스트해 '키가 없습니다'가 떠서
+     방금 넣은 키가 거부된 것처럼 보였다. */
+  const field = $(provider === 'anthropic' ? 's-anthropic' : 's-openai');
+  const typed = cleanKey(field.value);
+  if (typed.key) {
+    setMyKey(provider, typed.key);
+    field.value = '';
+    loadSettings();
+  }
   box.textContent = '확인 중…';
   try {
     const r = await api('/api/test-key', {
@@ -681,13 +710,17 @@ $('btn-list-models').addEventListener('click', async () => {
 });
 
 $('btn-save-settings').addEventListener('click', async () => {
-  const anth = $('s-anthropic').value.trim();
-  const oai = $('s-openai').value.trim();
+  const a = cleanKey($('s-anthropic').value);
+  const o = cleanKey($('s-openai').value);
+  const anth = a.key, oai = o.key;
   const share = $('s-share').checked;
 
   // 키는 먼저 내 브라우저에 저장한다 (서버에 남기지 않음)
   if (anth) setMyKey('anthropic', anth);
   if (oai) setMyKey('openai', oai);
+  if ((anth && a.changed) || (oai && o.changed)) {
+    status('키에 딸려온 따옴표·공백을 걸러내고 저장했습니다.', 'ok');
+  }
 
   await run('설정 저장', () => api('/api/settings', {
     method: 'POST',
@@ -710,6 +743,14 @@ $('btn-save-settings').addEventListener('click', async () => {
   $('s-anthropic').value = '';
   $('s-openai').value = '';
   loadSettings();
+});
+
+/* 키를 붙여넣고 Enter 를 누르는 것이 자연스럽다. 아무 일도 안 일어나면
+   넣은 것이 안 먹힌 줄 안다. Enter 를 저장으로 연결한다. */
+['s-anthropic', 's-openai'].forEach((id) => {
+  $(id).addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); $('btn-save-settings').click(); }
+  });
 });
 
 $('btn-forget-keys').addEventListener('click', () => {
