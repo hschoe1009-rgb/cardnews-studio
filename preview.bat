@@ -1,56 +1,71 @@
 @echo off
-chcp 65001 > nul
 cd /d "%~dp0"
 
-REM ë°°í¬ ì „ ê²€ìˆ˜ìš©. Vercel ì— ì˜¬ë¼ê°ˆ site\ ë¥¼ ê·¸ëŒ€ë¡œ localhost ì— ë„ìš´ë‹¤.
-REM ì˜¬ë¼ê°ˆ íŒŒì¼ê³¼ ë˜‘ê°™ì€ ê²ƒì„ ë³´ëŠ” ê²ƒì´ ëª©ì ì´ë¼ ë¹Œë“œë¶€í„° ë‹¤ì‹œ í•œë‹¤.
+REM ¹èÆ÷ Àü °Ë¼ö¿ë. Vercel ¿¡ ¿Ã¶ó°¥ site Æú´õ¸¦ ±×´ë·Î localhost ¿¡ ¶ç¿î´Ù.
+REM ¿Ã¶ó°¥ ÆÄÀÏ°ú ¶È°°Àº °ÍÀ» º¸´Â °ÍÀÌ ¸ñÀûÀÌ¶ó ºôµåºÎÅÍ ´Ù½Ã ÇÑ´Ù.
 REM
-REM   preview.bat         localhost ì—ì„œë§Œ (ê¸°ë³¸)
-REM   preview.bat phone   ê°™ì€ ì™€ì´íŒŒì´ì˜ í°ì—ì„œë„ ë³¼ ìˆ˜ ìžˆê²Œ
+REM   preview.bat         localhost ¿¡¼­¸¸ (±âº»)
+REM   preview.bat phone   °°Àº ¿ÍÀÌÆÄÀÌÀÇ Æù¿¡¼­µµ º¼ ¼ö ÀÖ°Ô
+REM
+REM ÀÎÄÚµù ÁÖÀÇ (µÎ °¡Áö°¡ ´Ù¸£´Ù)
+REM   1. ÀÌ ÆÄÀÏ ÀÚÃ¼´Â CP949(ANSI) ·Î ÀúÀåÇÑ´Ù. UTF-8 ·Î µÎ¸é cmd °¡
+REM      ÇÑ±Û ÁÙÀ» ¸í·ÉÀ¸·Î Àß¸ø ÀÐ¾î ÅëÂ°·Î ½ÇÇàµÇÁö ¾Ê´Â´Ù.
+REM   2. µµ±¸ ½ºÅ©¸³Æ®´Â UTF-8 ·Î Ãâ·ÂÇÑ´Ù. ±×·¡¼­ ÆÄÀÌ½ãÀ» ºÎ¸¦ ¶§¸¸
+REM      ÄÚµåÆäÀÌÁö¸¦ 65001 ·Î ¹Ù²å´Ù°¡ µÇµ¹¸°´Ù (:py ¾Æ·¡).
 
 if not exist ".venv\Scripts\python.exe" (
-  echo ê°€ìƒí™˜ê²½ì´ ì—†ìŠµë‹ˆë‹¤. run.bat ì„ ë¨¼ì € í•œ ë²ˆ ì‹¤í–‰í•´ ì£¼ì„¸ìš”.
+  echo °¡»óÈ¯°æÀÌ ¾ø½À´Ï´Ù. run.bat À» ¸ÕÀú ÇÑ ¹ø ½ÇÇàÇØ ÁÖ¼¼¿ä.
   pause
   exit /b 1
 )
 
-echo  [1/3] ëžœë”© ë¹Œë“œ...
-.venv\Scripts\python.exe tools\build_site.py
+echo.
+echo  [1/3] ·£µù + °¡ÀÌµåºÏ ºôµå...
+call :py tools\build_site.py
 if errorlevel 1 goto fail
 
-echo  [2/3] ì›¹ì•± ë¹Œë“œ...
-.venv\Scripts\python.exe tools\build_webapp.py
+echo  [2/3] À¥¾Û ºôµå...
+call :py tools\build_webapp.py
 if errorlevel 1 goto fail
 
-echo  [3/3] ë°°í¬ ì „ ê²€ì‚¬...
-.venv\Scripts\python.exe tools\check_site.py
+echo  [3/3] ¹èÆ÷ Àü °Ë»ç...
+call :py tools\check_site.py
 if errorlevel 1 goto fail
 
 set BIND=127.0.0.1
 if /i "%~1"=="phone" set BIND=0.0.0.0
 
 echo.
-echo   ëžœë”©   http://localhost:8850/
-echo   ì›¹ì•±   http://localhost:8850/app/
+echo   ·£µù      http://localhost:8850/
+echo   °¡ÀÌµåºÏ   http://localhost:8850/guide/
+echo   À¥¾Û      http://localhost:8850/app/
 
 if /i "%~1"=="phone" (
   echo.
-  echo   í°ì—ì„œëŠ” ê°™ì€ ì™€ì´íŒŒì´ì—ì„œ ì•„ëž˜ ì£¼ì†Œë¡œ:
-  for /f "tokens=14" %%a in ('ipconfig ^| findstr /c:"IPv4"') do echo      http://%%a:8850/
+  echo   Æù¿¡¼­´Â °°Àº ¿ÍÀÌÆÄÀÌ¿¡¼­ ¾Æ·¡ ÁÖ¼Ò·Î:
+  for /f "tokens=2 delims=:" %%a in ('ipconfig ^| findstr /c:"IPv4"') do echo      http://%%a:8850/
 )
 
 echo.
-echo   ëë‚¼ ë•ŒëŠ” ì´ ì°½ì—ì„œ Ctrl+C
+echo   ³¡³¾ ¶§´Â ÀÌ Ã¢¿¡¼­ Ctrl+C
 echo.
 
 start "" http://localhost:8850/
 
-REM --directory ë¡œ ë„ìš´ë‹¤. ì•ˆ ê·¸ëŸ¬ë©´ ì´ ì°½ì´ site\ ë¥¼ ë¶™ìž¡ê³  ìžˆì–´ì„œ
-REM ë‹¤ìŒ ë¹Œë“œ ë•Œ site\ ë¥¼ ì§€ìš°ì§€ ëª»í•˜ê³  ì‹¤íŒ¨í•œë‹¤.
+REM --directory ·Î ¶ç¿î´Ù. ¾È ±×·¯¸é ÀÌ Ã¢ÀÌ site Æú´õ¸¦ ºÙÀâ°í ÀÖ¾î¼­
+REM ´ÙÀ½ ºôµå ¶§ site ¸¦ Áö¿ìÁö ¸øÇÏ°í ½ÇÆÐÇÑ´Ù.
 .venv\Scripts\python.exe -m http.server 8850 --bind %BIND% --directory site
 goto :eof
 
+REM ÆÄÀÌ½ãÀº UTF-8 ·Î Âï´Â´Ù. ±×µ¿¾È¸¸ ÄÜ¼ÖÀ» 65001 ·Î µÎ°í µÇµ¹¸°´Ù.
+:py
+chcp 65001 > nul
+.venv\Scripts\python.exe %*
+set RC=%errorlevel%
+chcp 949 > nul
+exit /b %RC%
+
 :fail
 echo.
-echo   ë¹Œë“œ ë˜ëŠ” ê²€ì‚¬ì—ì„œ ê±¸ë ¸ìŠµë‹ˆë‹¤. ìœ„ ë©”ì‹œì§€ë¥¼ í™•ì¸í•´ ì£¼ì„¸ìš”.
+echo   ºôµå ¶Ç´Â °Ë»ç¿¡¼­ °É·È½À´Ï´Ù. À§ ¸Þ½ÃÁö¸¦ È®ÀÎÇØ ÁÖ¼¼¿ä.
 pause
