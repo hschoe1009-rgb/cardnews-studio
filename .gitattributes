@@ -9,3 +9,8 @@
 *.otf binary
 *.xlsx binary
 *.zip binary
+
+# 배치 파일은 건드리지 않는다.
+# CP949(ANSI) + CRLF 라야 cmd 가 한글 줄을 제대로 읽는다.
+# text=auto 로 LF·UTF-8 변환이 걸리면 실행 자체가 안 된다.
+*.bat -text

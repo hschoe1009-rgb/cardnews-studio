@@ -1,18 +1,21 @@
 @echo off
+REM ÀÌ ÆÄÀÏÀº CP949(ANSI) + CRLF ·Î ÀúÀåÇÑ´Ù.
+REM UTF-8 ·Î ÀúÀåÇÏ¸é cmd °¡ ÇÑ±Û ÁÙÀ» ±ú¶ß·Á ÀÐ´Â´Ù.
+REM (.gitattributes ÀÇ *.bat -text °¡ º¯È¯À» ¸·°í ÀÖ´Ù)
 cd /d "%~dp0"
 
 if not exist ".venv\Scripts\python.exe" (
-  echo [1/3] ê°€ìƒí™˜ê²½ì„ ë§Œë“­ë‹ˆë‹¤...
+  echo [1/3] °¡»óÈ¯°æÀ» ¸¸µì´Ï´Ù...
   python -m venv .venv
-  echo [2/3] íŒ¨í‚¤ì§€ë¥¼ ì„¤ì¹˜í•©ë‹ˆë‹¤...
+  echo [2/3] ÆÐÅ°Áö¸¦ ¼³Ä¡ÇÕ´Ï´Ù...
   .venv\Scripts\python.exe -m pip install --upgrade pip
   .venv\Scripts\python.exe -m pip install -r requirements.txt
-  echo [3/3] Chromium ë Œë”ëŸ¬ë¥¼ ì„¤ì¹˜í•©ë‹ˆë‹¤...
+  echo [3/3] Chromium ·»´õ·¯¸¦ ¼³Ä¡ÇÕ´Ï´Ù...
   .venv\Scripts\python.exe -m playwright install chromium
 )
 
 echo.
-echo  ì¹´ë“œë‰´ìŠ¤ ìŠ¤íŠœë””ì˜¤  ->  http://127.0.0.1:8765
+echo  Ä«µå´º½º ½ºÆ©µð¿À  ->  http://127.0.0.1:8765
 echo.
 start "" http://127.0.0.1:8765
 .venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8765
